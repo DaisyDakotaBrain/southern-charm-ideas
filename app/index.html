@@ -1,0 +1,840 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Charm Route</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: route-sheet + test-kit language. Field = one phone column (framed on desktop). Office = list + detail on desktop.
+   Readings show their real test-kit colors (DPD pink for chlorine, phenol red for pH). No KPI tiles. */
+:root {
+  --paper: #f5f8fb;
+  --card: #ffffff;
+  --ink: #10273d;
+  --muted: #4a637a;
+  --line: #d6e1ea;
+  --tint: #e6f1fa;
+  --accent: #0a69ad;
+  --accent-ink: #ffffff;
+  --accent-hover: #08578f;
+  --sun: #f2b705;
+  --good: #1d7a46; --good-bg: #e3f4ea;
+  --warn: #9a4b00; --warn-bg: #fff2d6;
+  --bad: #b42318; --bad-bg: #fde8e6;
+  --ai: #0d5c63; --ai-bg: #e2f3f2;
+  --shadow: 0 8px 28px rgba(16, 39, 61, .10);
+  --font-display: "Outfit", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Figtree", "Segoe UI", system-ui, sans-serif;
+  --font-num: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0b1824; --card: #112436; --ink: #e8f1f8; --muted: #a9bfd2; --line: #23405a; --tint: #143049;
+    --accent: #57b4f2; --accent-ink: #06223a; --accent-hover: #7cc6f6; --sun: #f5c42c;
+    --good: #6fd69a; --good-bg: #133a28; --warn: #ffc56b; --warn-bg: #3a2a10; --bad: #ff8a7a; --bad-bg: #3d1a17;
+    --ai: #7fdcd3; --ai-bg: #12363a; --shadow: 0 8px 28px rgba(0, 0, 0, .4); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0b1824; --card: #112436; --ink: #e8f1f8; --muted: #a9bfd2; --line: #23405a; --tint: #143049;
+  --accent: #57b4f2; --accent-ink: #06223a; --accent-hover: #7cc6f6; --sun: #f5c42c;
+  --good: #6fd69a; --good-bg: #133a28; --warn: #ffc56b; --warn-bg: #3a2a10; --bad: #ff8a7a; --bad-bg: #3d1a17;
+  --ai: #7fdcd3; --ai-bg: #12363a; --shadow: 0 8px 28px rgba(0, 0, 0, .4); color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { background: var(--paper); color: var(--ink); font: 400 15px/1.5 var(--font-body); }
+h1, h2, h3 { font-family: var(--font-display); margin: 0; line-height: 1.15; text-wrap: balance; }
+p { margin: 0; }
+button { font: inherit; color: inherit; }
+.num { font-family: var(--font-num); font-variant-numeric: tabular-nums; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
+
+/* Top bar */
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--card); }
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; background: var(--card); border-bottom: 1px solid var(--line); }
+.top-in { display: flex; align-items: center; gap: 14px; height: 60px; max-width: 1280px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.logo { height: 34px; width: auto; background: #fff; border-radius: 7px; padding: 2px 5px; }
+.app-name { font: 700 1.1rem var(--font-display); }
+.app-name small { display: block; font: 500 .75rem var(--font-body); color: var(--muted); }
+.seg { margin-left: auto; display: inline-flex; background: var(--paper); border: 1px solid var(--line); border-radius: 999px; padding: 3px; }
+.seg button { border: 0; background: none; border-radius: 999px; padding: 7px 16px; font-weight: 600; cursor: pointer; min-height: 38px; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.demo-note { font-size: .8rem; color: var(--muted); }
+.coach-btn { display: inline-flex; align-items: center; gap: 6px; min-height: 38px; padding: 0 14px; border: 1.5px solid var(--line); border-radius: 999px; background: var(--card); font-weight: 600; cursor: pointer; }
+.coach-btn[aria-pressed="true"] { background: var(--sun); border-color: var(--sun); color: #10273d; }
+.coach { border-left: 4px solid var(--sun); background: var(--tint); border-radius: 10px; padding: 10px 12px; font-size: .88rem; display: grid; gap: 4px; }
+.coach .who { font-weight: 700; font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; }
+.coach ul { margin: 0; padding-left: 18px; display: grid; gap: 3px; }
+.coach-tip { margin: -2px 0 4px; padding: 6px 12px; border-left: 4px solid var(--sun); background: var(--tint); border-radius: 0 8px 8px 0; font-size: .84rem; }
+.never { background: var(--bad-bg); border-radius: 12px; padding: 12px; display: grid; gap: 4px; font-size: .9rem; }
+.never strong { color: var(--bad); font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; }
+.never ul { margin: 0; padding-left: 18px; display: grid; gap: 3px; }
+.dose .safe { grid-column: 1 / -1; font-size: .82rem; color: var(--ink); border-top: 1px dashed var(--line); padding-top: 6px; margin-top: 4px; }
+@media (max-width: 640px) { .demo-note { display: none; } .app-name small { display: none; } }
+@media (max-width: 420px) { .logo { display: none; } }
+
+/* Shared bits */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 18px; border-radius: 12px; border: 1.5px solid transparent; font-weight: 700; cursor: pointer; transition: background .15s ease, transform .1s ease; white-space: nowrap; }
+.btn:active { transform: scale(.98); }
+.btn-primary { background: var(--accent); color: var(--accent-ink); }
+.btn-primary:hover { background: var(--accent-hover); }
+.btn-line { background: var(--card); border-color: var(--line); }
+.btn-line:hover { border-color: var(--accent); }
+.btn-ai { background: var(--ai); color: var(--card); }
+.btn-sm { min-height: 36px; padding: 0 12px; border-radius: 9px; font-size: .88rem; }
+.btn-block { width: 100%; }
+.tag { display: inline-flex; align-items: center; gap: 5px; font-size: .76rem; font-weight: 700; padding: 3px 8px; border-radius: 6px; white-space: nowrap; }
+.tag-sc { background: var(--tint); color: var(--accent); }
+.tag-warn { background: var(--warn-bg); color: var(--warn); }
+.tag-bad { background: var(--bad-bg); color: var(--bad); }
+.tag-good { background: var(--good-bg); color: var(--good); }
+.tag-ai { background: var(--ai-bg); color: var(--ai); }
+.label { font-size: .75rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.ic { width: 18px; height: 18px; flex: none; }
+.muted { color: var(--muted); }
+
+/* ===== FIELD ===== */
+.field-wrap { padding-block: 20px 40px; display: flex; justify-content: center; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.phone { width: 100%; max-width: 430px; background: var(--paper); border: 1px solid var(--line); border-radius: 28px; box-shadow: var(--shadow); overflow: hidden; position: relative; }
+@media (max-width: 520px) { .field-wrap { padding: 0; } .phone { border: 0; border-radius: 0; box-shadow: none; max-width: none; } }
+.ph-head { background: var(--card); padding: 18px 18px 14px; border-bottom: 1px solid var(--line); }
+.ph-body { padding: 14px; display: grid; gap: 14px; }
+.ph-foot { position: sticky; bottom: 0; background: color-mix(in srgb, var(--card) 94%, transparent); backdrop-filter: blur(8px); border-top: 1px solid var(--line); padding: 12px 14px calc(12px + env(safe-area-inset-bottom, 0px)); display: flex; gap: 10px; }
+.ph-foot .btn { flex: 1; }
+.day { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.day h1 { font-size: 1.5rem; }
+.day-sub { color: var(--muted); font-size: .9rem; margin-top: 4px; }
+.progress { margin-top: 12px; display: flex; gap: 4px; }
+.progress span { flex: 1; height: 6px; border-radius: 3px; background: var(--line); }
+.progress span.done { background: var(--good); }
+.progress span.active { background: var(--accent); }
+
+.panel { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 14px; }
+.panel h2 { font-size: 1.02rem; }
+.panel-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; }
+
+.map { width: 100%; height: auto; display: block; border-radius: 12px; background: var(--tint); }
+.map .land { fill: var(--card); }
+.map .water { fill: var(--tint); }
+.map .town { font: 600 3px var(--font-body); fill: var(--muted); }
+.map .route { fill: none; stroke: var(--accent); stroke-width: .8; stroke-linejoin: round; stroke-dasharray: 2 1.2; }
+.map .stop circle { fill: var(--card); stroke: var(--accent); stroke-width: .7; }
+.map .stop.done circle { fill: var(--good); stroke: var(--good); }
+.map .stop.flag circle { stroke: var(--bad); stroke-width: 1; }
+.map .stop text { font: 700 2.6px var(--font-num); fill: var(--ink); text-anchor: middle; dominant-baseline: central; }
+.map .stop.done text { fill: var(--card); }
+.map .shop { fill: var(--sun); stroke: var(--ink); stroke-width: .4; }
+
+.ai-note { background: var(--ai-bg); color: var(--ink); border-radius: 12px; padding: 12px; display: grid; gap: 6px; font-size: .92rem; }
+.ai-note .who { display: flex; align-items: center; gap: 6px; font-weight: 700; color: var(--ai); font-size: .82rem; }
+.ai-note ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.thinking { display: inline-flex; gap: 4px; align-items: center; color: var(--ai); font-weight: 600; }
+.thinking i { width: 6px; height: 6px; border-radius: 50%; background: var(--ai); animation: blink 1s infinite ease-in-out; }
+.thinking i:nth-child(2) { animation-delay: .15s; } .thinking i:nth-child(3) { animation-delay: .3s; }
+@keyframes blink { 0%, 100% { opacity: .25; } 50% { opacity: 1; } }
+
+.stops { display: grid; }
+.stop-row { display: grid; grid-template-columns: 34px 1fr auto; gap: 12px; align-items: center; padding: 12px 4px; border: 0; border-top: 1px solid var(--line); background: none; text-align: left; cursor: pointer; width: 100%; min-height: 64px; }
+.stop-row:first-child { border-top: 0; }
+.stop-row:hover { background: var(--paper); }
+.stop-n { width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--accent); display: grid; place-items: center; font: 600 .9rem var(--font-num); color: var(--accent); }
+.stop-row.done .stop-n { background: var(--good); border-color: var(--good); color: var(--card); }
+.stop-row.done .stop-name { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--line); }
+.stop-name { font-weight: 700; }
+.stop-meta { font-size: .85rem; color: var(--muted); }
+.stop-flags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
+.stop-time { font: 600 .85rem var(--font-num); color: var(--muted); text-align: right; }
+
+/* stop screen */
+.back { border: 0; background: none; color: var(--accent); font-weight: 700; padding: 6px 0; cursor: pointer; display: inline-flex; gap: 4px; align-items: center; min-height: 40px; }
+.cust-h { display: flex; justify-content: space-between; gap: 10px; align-items: start; margin-top: 4px; }
+.cust-h h1 { font-size: 1.4rem; }
+.alert { display: grid; grid-template-columns: 22px 1fr; gap: 10px; background: var(--warn-bg); border-radius: 14px; padding: 12px 14px; }
+.alert .ic { color: var(--warn); width: 22px; height: 22px; }
+.alert strong { display: block; color: var(--warn); font-size: .82rem; text-transform: uppercase; letter-spacing: .05em; }
+.alert ul { margin: 4px 0 0; padding-left: 16px; display: grid; gap: 3px; }
+.facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.fact { background: var(--paper); border-radius: 10px; padding: 8px 10px; }
+.fact b { display: block; font: 600 1rem var(--font-num); }
+.fact span { font-size: .75rem; color: var(--muted); }
+.equip { display: grid; gap: 0; margin-top: 8px; }
+.equip-row { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; padding: 9px 0; border-top: 1px solid var(--line); }
+.equip-row:first-child { border-top: 0; }
+.equip-row span { font-size: .82rem; color: var(--muted); }
+.checks { display: grid; gap: 8px; }
+.check { display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 14px; border: 1.5px solid var(--line); border-radius: 12px; background: var(--card); cursor: pointer; text-align: left; font-weight: 600; width: 100%; }
+.check .box { width: 26px; height: 26px; border-radius: 8px; border: 2px solid var(--line); display: grid; place-items: center; flex: none; }
+.check[aria-pressed="true"] { border-color: var(--good); background: var(--good-bg); }
+.check[aria-pressed="true"] .box { background: var(--good); border-color: var(--good); color: var(--card); }
+.check .box svg { width: 16px; height: 16px; opacity: 0; }
+.check[aria-pressed="true"] .box svg { opacity: 1; }
+
+.readings { display: grid; gap: 8px; }
+.rd { display: grid; grid-template-columns: 30px 1fr auto; gap: 12px; align-items: center; padding: 8px 0; border-top: 1px solid var(--line); }
+.rd:first-child { border-top: 0; }
+.swatch { width: 30px; height: 30px; border-radius: 8px; border: 1px solid rgba(0,0,0,.12); }
+.rd-name { font-weight: 700; }
+.rd-name span { display: block; font-weight: 500; font-size: .8rem; color: var(--muted); }
+.rd-name .off { color: var(--bad); font-weight: 700; }
+.stepper { display: flex; align-items: center; gap: 6px; }
+.stepper button { width: 44px; height: 44px; border-radius: 10px; border: 1.5px solid var(--line); background: var(--card); font: 700 1.3rem var(--font-num); cursor: pointer; }
+.stepper button:active { background: var(--tint); }
+.stepper output { min-width: 62px; text-align: center; font: 600 1.15rem var(--font-num); }
+
+.doses { display: grid; gap: 8px; margin-top: 4px; }
+.dose { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 10px 12px; background: var(--card); border-radius: 10px; border: 1px solid var(--line); }
+.dose b { font: 600 1.05rem var(--font-num); text-align: right; }
+.dose span { grid-column: 1 / -1; font-size: .82rem; color: var(--muted); }
+
+.sheet-bg { position: fixed; inset: 0; background: rgba(6, 18, 30, .5); z-index: 20; display: flex; align-items: flex-end; justify-content: center; }
+.sheet { width: 100%; max-width: 430px; background: var(--card); border-radius: 22px 22px 0 0; padding: 18px 16px calc(18px + env(safe-area-inset-bottom, 0px)); max-height: 88dvh; overflow: auto; display: grid; gap: 14px; }
+.sheet-grab { width: 44px; height: 5px; border-radius: 3px; background: var(--line); justify-self: center; }
+.shots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.shot { border: 2px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--paper); cursor: pointer; padding: 0; text-align: left; }
+.shot[aria-pressed="true"] { border-color: var(--accent); }
+.shot img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+.shot span { display: block; padding: 6px 8px; font-size: .78rem; font-weight: 600; }
+.shot .green { filter: hue-rotate(-75deg) saturate(1.6) brightness(.85); }
+.shot .crack { object-position: 20% 85%; }
+.shot .display { aspect-ratio: 1; display: grid; place-items: center; background: #13202c; color: #9be3ff; font: 600 .78rem var(--font-num); text-align: center; padding: 8px; line-height: 1.3; }
+textarea.report { width: 100%; min-height: 190px; border: 1.5px solid var(--line); border-radius: 12px; padding: 12px; font: 400 .95rem/1.5 var(--font-body); color: var(--ink); background: var(--paper); resize: vertical; }
+.done-banner { background: var(--good-bg); color: var(--good); border-radius: 12px; padding: 12px 14px; font-weight: 700; display: flex; gap: 8px; align-items: center; }
+
+/* ===== OFFICE ===== */
+.office { max-width: 1280px; margin: 0 auto; padding-block: 20px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin-bottom: 20px; overflow-x: auto; }
+.tabs button { border: 0; background: none; padding: 12px 14px; font-weight: 700; color: var(--muted); border-bottom: 3px solid transparent; cursor: pointer; white-space: nowrap; min-height: 46px; }
+.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+.tabs .count { font: 600 .75rem var(--font-num); background: var(--bad-bg); color: var(--bad); border-radius: 999px; padding: 1px 7px; margin-left: 6px; }
+.o-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 900px) { .o-grid { grid-template-columns: 1fr; } }
+.o-title { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+.o-title h2 { font-size: 1.3rem; }
+.board { background: var(--card); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+.board-row { display: grid; grid-template-columns: 34px minmax(0, 1.4fr) minmax(0, 1fr) 90px; gap: 12px; align-items: center; padding: 12px 16px; border-top: 1px solid var(--line); }
+.board-row:first-child { border-top: 0; }
+.board-row.head { background: var(--paper); font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); padding-block: 9px; }
+.status { font-size: .82rem; font-weight: 700; display: inline-flex; gap: 6px; align-items: center; }
+.status::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--line); }
+.status.done { color: var(--good); } .status.done::before { background: var(--good); }
+.status.active { color: var(--accent); } .status.active::before { background: var(--accent); }
+.status.todo { color: var(--muted); }
+@media (max-width: 640px) { .board-row { grid-template-columns: 30px minmax(0, 1fr) 80px; } .board-row .hide-sm { display: none; } }
+.attn { display: grid; gap: 10px; }
+.attn-item { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 8px; }
+.attn-item .row { display: flex; justify-content: space-between; gap: 10px; align-items: start; }
+.attn-item h3 { font-size: 1rem; }
+.attn-item p { font-size: .9rem; color: var(--muted); }
+.attn-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.cust-layout { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 900px) { .cust-layout { grid-template-columns: 1fr; } }
+.search { width: 100%; min-height: 44px; border: 1.5px solid var(--line); border-radius: 10px; padding: 0 12px; font: inherit; background: var(--card); color: var(--ink); margin-bottom: 10px; }
+.cust-list { background: var(--card); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+.cust-item { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; padding: 12px 14px; border: 0; border-top: 1px solid var(--line); width: 100%; text-align: left; background: none; cursor: pointer; }
+.cust-item:first-child { border-top: 0; }
+.cust-item[aria-current="true"] { background: var(--tint); }
+.cust-item span { font-size: .82rem; color: var(--muted); }
+.profile { display: grid; gap: 16px; }
+.profile-head { display: flex; justify-content: space-between; gap: 12px; align-items: start; flex-wrap: wrap; }
+.profile-head h2 { font-size: 1.5rem; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 700px) { .two { grid-template-columns: 1fr; } }
+.chart { width: 100%; height: auto; display: block; }
+.chart .band { fill: var(--good-bg); }
+.chart .ln { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.chart .dot { stroke: var(--card); stroke-width: 1.5; }
+.chart text { font: 500 9px var(--font-num); fill: var(--muted); }
+.log { display: grid; }
+.log-row { padding: 12px 0; border-top: 1px solid var(--line); display: grid; gap: 4px; }
+.log-row:first-child { border-top: 0; }
+.log-row .when { font: 600 .82rem var(--font-num); color: var(--muted); }
+.log-row p { font-size: .9rem; }
+.tickets { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 900px) { .tickets { grid-template-columns: 1fr; } }
+.col h3 { font-size: .95rem; display: flex; justify-content: space-between; margin-bottom: 10px; }
+.col-body { display: grid; gap: 10px; min-height: 120px; background: var(--paper); border: 1px dashed var(--line); border-radius: 14px; padding: 10px; align-content: start; }
+.ticket { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px; display: grid; gap: 6px; }
+.ticket p { font-size: .88rem; color: var(--muted); }
+.empty { color: var(--muted); font-size: .88rem; padding: 10px; text-align: center; }
+.toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 12px 18px; border-radius: 12px; font-weight: 600; z-index: 30; box-shadow: var(--shadow); max-width: calc(100vw - 32px); }
+</style>
+</head>
+<body>
+
+
+<div class="top">
+  <div class="top-in">
+    <img class="logo" src="img/logo.png" alt="Southern Charm Pools" width="122" height="34">
+    <div class="app-name">Charm Route<small>Southern Charm Pool Care</small></div>
+    <span class="demo-note">Demo with sample customers</span>
+    <div class="seg" role="group" aria-label="App side">
+      <button type="button" data-mode="field" aria-pressed="true">Field</button>
+      <button type="button" data-mode="office" aria-pressed="false">Office</button>
+    </div>
+    <button type="button" class="coach-btn" data-coach aria-pressed="false" title="Extra guidance for a new tech">Coach</button>
+  </div>
+</div>
+<div id="field" class="field-wrap"><div class="phone" id="phone"></div></div>
+<div id="office" class="office" hidden></div>
+<div id="sheet-root"></div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(() => {
+'use strict';
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const I = {
+  check: '<svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66 77.66l-128 128a8 8 0 0 1-11.32 0l-56-56a8 8 0 0 1 11.32-11.32L96 188.69 218.34 66.34a8 8 0 0 1 11.32 11.32Z"/></svg>',
+  warn: '<svg class="ic" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M236.8 188.09 149.35 36.22a24.76 24.76 0 0 0-42.7 0L19.2 188.09a23.51 23.51 0 0 0 0 23.72A24.35 24.35 0 0 0 40.55 224h174.9a24.35 24.35 0 0 0 21.33-12.19 23.51 23.51 0 0 0 .02-23.72ZM120 104a8 8 0 0 1 16 0v40a8 8 0 0 1-16 0Zm8 88a12 12 0 1 1 12-12 12 12 0 0 1-12 12Z"/></svg>',
+  spark: '<svg class="ic" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M197.58 129.06 146 110l-19-51.62a15.92 15.92 0 0 0-29.88 0L78 110l-51.62 19a15.92 15.92 0 0 0 0 29.88L78 178l19 51.62a15.92 15.92 0 0 0 29.88 0L146 178l51.62-19a15.92 15.92 0 0 0 0-29.88ZM137 164.22a8 8 0 0 0-4.74 4.74L112 223.85 91.78 169a8 8 0 0 0-4.78-4.78L32.15 144 87 123.78a8 8 0 0 0 4.78-4.78L112 64.15 132.22 119a8 8 0 0 0 4.74 4.74L191.85 144ZM144 40a8 8 0 0 1 8-8h16V16a8 8 0 0 1 16 0v16h16a8 8 0 0 1 0 16h-16v16a8 8 0 0 1-16 0V48h-16a8 8 0 0 1-8-8Zm104 48a8 8 0 0 1-8 8h-8v8a8 8 0 0 1-16 0v-8h-8a8 8 0 0 1 0-16h8v-8a8 8 0 0 1 16 0v8h8a8 8 0 0 1 8 8Z"/></svg>',
+  back: '<svg class="ic" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M165.66 202.34a8 8 0 0 1-11.32 11.32l-80-80a8 8 0 0 1 0-11.32l80-80a8 8 0 0 1 11.32 11.32L91.31 128Z"/></svg>'
+};
+
+/* ---------- Sample data (fictional customers) ---------- */
+const SHOP = { x: 80, y: 38 };
+const POOLS = [
+  { id: 'whitfield', name: 'Dana Whitfield', addr: 'Seaside Ln', area: 'League City', x: 52, y: 52, win: '8:30 to 10:00', gal: 18500, surface: 'Pebble', san: 'salt', plan: 'Full service', built: { by: true, year: 2024, no: 'SC-0412' },
+    equip: [['Pentair IntelliFlo3 VSF pump', 'Installed Mar 2024', 'Warranty to Mar 2027'], ['Clean & Clear Plus 420 cartridge filter', 'Clean psi 12', 'Installed Mar 2024'], ['IntelliChlor IC40 salt cell', 'Output 50%', 'Warranty to Mar 2027'], ['MasterTemp 400 heater', 'Installed Mar 2024', 'Warranty to Mar 2027']],
+    needs: ['Gate code 4417', 'Dog in yard (Biscuit). Keep the side gate latched.'], mins: 30,
+    today: { fc: 1.2, cc: 0.2, ph: 7.9, ta: 90, cya: 70, salt: 2900, psi: 18 },
+    hist: { fc: [4.5, 4.0, 3.8, 3.2, 2.4, 1.2], ph: [7.5, 7.6, 7.6, 7.7, 7.8, 7.9], psi: [12, 13, 13, 14, 16, 18] }, flags: [['warn', 'Filter psi rising']] },
+  { id: 'okafor', name: 'Chidi Okafor', addr: 'Bay Ridge Ct', area: 'Clear Lake', x: 66, y: 28, win: 'after 10:00', gal: 14000, surface: 'Plaster', san: 'chlorine', plan: 'Full service', built: { by: false, year: 2009 },
+    equip: [['Hayward Super Pump 1.5 HP', 'Installed 2015', 'No warranty on file'], ['Hayward C900 cartridge filter', 'Clean psi 10', 'Installed 2015']],
+    needs: ['Works nights. No visits before 10 AM and do not knock.'], mins: 25,
+    today: { fc: 3.5, cc: 0.3, ph: 7.5, ta: 110, cya: 95, salt: 0, psi: 11 },
+    hist: { fc: [3.0, 3.5, 4.0, 3.5, 3.0, 3.5], ph: [7.4, 7.5, 7.5, 7.6, 7.5, 7.5], psi: [10, 10, 11, 11, 11, 11] }, flags: [['warn', 'CYA high from tabs']] },
+  { id: 'delgado', name: 'Rosa Delgado', addr: 'Windsong Dr', area: 'Friendswood', x: 18, y: 30, win: 'any time', gal: 22000, surface: 'Pebble', san: 'salt', plan: 'Full service plus', built: { by: true, year: 2023, no: 'SC-0377' },
+    equip: [['Pentair IntelliFlo3 VSF pump', 'Installed Jun 2023', 'Warranty to Jun 2026'], ['Clean & Clear Plus 520 cartridge filter', 'Clean psi 13', 'Installed Jun 2023'], ['IntelliChlor IC60 salt cell', 'Output 60%', 'Warranty to Jun 2026'], ['Spa spillover with UltraTemp heat pump', 'Installed Jun 2023', 'Warranty to Jun 2026']],
+    needs: ['Oak tree over the deep end. Heavy leaves Oct to Dec.', 'Spa attached. Check spa jets after storms.'], mins: 70,
+    today: { fc: 0.0, cc: 1.5, ph: 7.7, ta: 80, cya: 60, salt: 3100, psi: 19 },
+    hist: { fc: [5.0, 4.8, 5.2, 4.5, 3.6, 0.0], ph: [7.5, 7.5, 7.6, 7.5, 7.6, 7.7], psi: [13, 14, 14, 15, 16, 19] }, flags: [['bad', 'Customer photo: green water'], ['warn', 'Storm Sunday']] },
+  { id: 'nguyen', name: 'Linh Nguyen', addr: 'Harbor Glen', area: 'League City', x: 46, y: 60, win: 'any time', gal: 16000, surface: 'New plaster', san: 'chlorine', plan: 'New build, month 1 free', built: { by: true, year: 2025, no: 'SC-0498' },
+    equip: [['Pentair SuperFlo VS pump', 'Installed Oct 2025', 'Warranty to Oct 2028'], ['Pentair Triton II sand filter', 'Clean psi 15', 'Installed Oct 2025']],
+    needs: ['New plaster (Oct 2025). Nylon brush only, no metal.', 'First month of service is free (new build).'], mins: 25,
+    today: { fc: 4.0, cc: 0.1, ph: 7.6, ta: 90, cya: 40, salt: 0, psi: 15 },
+    hist: { fc: [4.0, 3.8, 4.2, 4.0], ph: [7.8, 7.7, 7.6, 7.6], psi: [15, 15, 15, 15] }, flags: [['good', 'New build']] },
+  { id: 'haskell', name: 'Margaret Haskell', addr: 'Marina Point', area: 'Kemah', x: 88, y: 50, win: 'call first', gal: 12500, surface: 'Pebble', san: 'salt', plan: 'Full service', built: { by: true, year: 2024, no: 'SC-0431' },
+    equip: [['Pentair IntelliFlo3 VSF pump', 'Last week: Drive Overheat', 'Warranty to Aug 2027'], ['Clean & Clear Plus 320 cartridge filter', 'Clean psi 11', 'Installed Aug 2024'], ['IntelliChlor IC40 salt cell', 'Output 40%', 'Warranty to Aug 2027']],
+    needs: ['Call 15 minutes before arriving. She does not check texts.', 'Infinity edge. Check the catch basin level.'], mins: 35,
+    today: { fc: 3.0, cc: 0.2, ph: 7.6, ta: 85, cya: 70, salt: 3300, psi: 12 },
+    hist: { fc: [4.0, 4.2, 3.8, 3.5, 3.4, 3.0], ph: [7.5, 7.5, 7.6, 7.5, 7.6, 7.6], psi: [11, 11, 11, 12, 12, 12] }, flags: [['warn', 'Pump error last visit']] },
+  { id: 'patel', name: 'Ravi Patel', addr: 'Egret Bay Blvd', area: 'Webster', x: 60, y: 16, win: 'any time', gal: 20000, surface: 'Plaster', san: 'chlorine', plan: 'Chemical check', built: { by: false, year: 2014 },
+    equip: [['Hayward TriStar VS pump', 'Installed 2021', 'No warranty on file'], ['Hayward ProGrid DE filter', 'Clean psi 14', 'Installed 2014']],
+    needs: ['Chemical-only plan. No brushing or vacuuming.'], mins: 15,
+    today: { fc: 2.5, cc: 0.4, ph: 7.4, ta: 70, cya: 45, salt: 0, psi: 16 },
+    hist: { fc: [3.5, 3.0, 3.2, 2.8, 2.6, 2.5], ph: [7.4, 7.5, 7.4, 7.4, 7.3, 7.4], psi: [14, 14, 15, 15, 16, 16] }, flags: [] },
+  { id: 'romero', name: 'Javier Romero', addr: 'Pine Bend', area: 'Dickinson', x: 56, y: 84, win: 'any time', gal: 15000, surface: 'Plaster', san: 'salt', plan: 'Full service', built: { by: false, year: 2017 },
+    equip: [['Jandy VS FloPro pump', 'Installed 2017', 'No warranty on file'], ['Jandy CL460 cartridge filter', 'Clean psi 10', 'Installed 2017'], ['Jandy AquaPure salt cell', 'Output 70%', 'Installed 2022']],
+    needs: ['Spa heater stays OFF unless the owner asks.'], mins: 25,
+    today: { fc: 3.8, cc: 0.2, ph: 7.3, ta: 60, cya: 55, salt: 2700, psi: 12 },
+    hist: { fc: [4.0, 4.1, 3.9, 4.0, 3.9, 3.8], ph: [7.5, 7.4, 7.4, 7.3, 7.3, 7.3], psi: [10, 11, 11, 11, 12, 12] }, flags: [] },
+  { id: 'kowalski', name: 'Ann Kowalski', addr: 'Lighthouse Way', area: 'League City', x: 40, y: 48, win: 'any time', gal: 19000, surface: 'Plaster', san: 'chlorine', plan: 'Full service', built: { by: true, year: 2021, no: 'SC-0233' },
+    equip: [['Pentair IntelliFlo VSF pump', 'Installed May 2021', 'Warranty ended May 2024'], ['Clean & Clear Plus 420 cartridge filter', 'Clean psi 12', 'Installed May 2021']],
+    needs: ['Waterline tile: hairline crack noted Oct 28. Watch it.'], mins: 25,
+    today: { fc: 3.5, cc: 0.2, ph: 7.5, ta: 90, cya: 50, salt: 0, psi: 13 },
+    hist: { fc: [4.0, 3.8, 3.6, 3.8, 3.6, 3.5], ph: [7.5, 7.5, 7.6, 7.5, 7.5, 7.5], psi: [12, 12, 12, 13, 13, 13] }, flags: [['warn', 'Tile crack to check']] }
+];
+const BY = Object.fromEntries(POOLS.map(p => [p.id, p]));
+const VISIT_DATES = ['Oct 7', 'Oct 14', 'Oct 21', 'Oct 28', 'Nov 4', 'Nov 11'];
+
+const READ = [
+  { k: 'fc', name: 'Free chlorine', unit: 'ppm', step: 0.5, min: 0, max: 30, fmt: v => v.toFixed(1) },
+  { k: 'cc', name: 'Combined chlorine', unit: 'ppm', step: 0.1, min: 0, max: 5, fmt: v => v.toFixed(1) },
+  { k: 'ph', name: 'pH', unit: '', step: 0.1, min: 6.8, max: 8.4, fmt: v => v.toFixed(1) },
+  { k: 'ta', name: 'Total alkalinity', unit: 'ppm', step: 10, min: 0, max: 240, fmt: v => v.toFixed(0) },
+  { k: 'cya', name: 'Stabilizer (CYA)', unit: 'ppm', step: 10, min: 0, max: 150, fmt: v => v.toFixed(0) },
+  { k: 'salt', name: 'Salt', unit: 'ppm', step: 100, min: 0, max: 5000, fmt: v => v.toFixed(0), saltOnly: true },
+  { k: 'psi', name: 'Filter pressure', unit: 'psi', step: 1, min: 0, max: 40, fmt: v => v.toFixed(0) }
+];
+
+/* Test-kit colors: DPD/FAS chlorine pink, phenol red pH */
+function mix(a, b, t) { const p = h => h.match(/\w\w/g).map(x => parseInt(x, 16)); const A = p(a), B = p(b); return '#' + A.map((v, i) => Math.round(v + (B[i] - v) * t).toString(16).padStart(2, '0')).join(''); }
+function swatch(k, v) {
+  if (k === 'fc' || k === 'cc') return mix('fbeef3', 'c2185b', Math.min(v / 6, 1));
+  if (k === 'ph') { const t = (v - 6.8) / 1.4; return t < .5 ? mix('f6d32b', 'f07a2a', t * 2) : mix('f07a2a', 'b0124f', (t - .5) * 2); }
+  if (k === 'ta') return mix('f4e04d', '2e8b57', Math.min(v / 180, 1));
+  if (k === 'cya') return mix('f7f7f2', 'b9b3a6', Math.min(v / 120, 1));
+  if (k === 'salt') return mix('eaf4fb', '7aa6c2', Math.min(v / 4000, 1));
+  return 'transparent';
+}
+function fcTarget(p, r) { const min = r.cya * 0.075; return Math.max(3, Math.round((p.san === 'salt' ? r.cya * 0.08 : r.cya * 0.1) * 2) / 2, Math.ceil(min * 2) / 2); }
+function offTarget(k, v, p, r) {
+  if (k === 'fc') return v < r.cya * 0.075 ? 'Below minimum for this CYA' : '';
+  if (k === 'cc') return v > 0.5 ? 'Above 0.5, needs oxidizing' : '';
+  if (k === 'ph') return v > 7.8 ? 'High' : v < 7.2 ? 'Low' : '';
+  if (k === 'ta') return v < 60 ? 'Low' : v > 120 ? 'High' : '';
+  if (k === 'cya') return v > 90 ? 'High, chlorine less effective' : v < 30 ? 'Low' : '';
+  if (k === 'salt') return p.san === 'salt' && v < 2800 ? 'Low for the cell' : '';
+  if (k === 'psi') { const clean = parseFloat((p.equip.find(e => /filter/i.test(e[0])) || [])[1]?.match(/\d+/)?.[0] || 0); return clean && v >= clean + 8 ? 'Clean the filter' : clean && v >= clean + 5 ? 'Rising, clean soon' : ''; }
+  return '';
+}
+
+/* Dosing math (standard pool-chem rules of thumb) */
+function doses(p, r) {
+  const G = p.gal / 10000, out = [];
+  const target = fcTarget(p, r);
+  const slam = r.fc === 0 && r.cc >= 1;
+  if (slam) {
+    const slamFc = Math.round(r.cya * 0.4);
+    const oz = Math.round((slamFc - r.fc) * 10.7 * G);
+    out.push({ what: 'Liquid chlorine 12.5%', amt: fmtOz(oz), why: `Algae: shock to ${slamFc} ppm (40% of CYA ${r.cya}) and hold it there until CC is 0.5 or less and the water clears.` });
+  } else if (r.fc < target) {
+    const oz = Math.round((target - r.fc) * 10.7 * G);
+    out.push({ what: 'Liquid chlorine 12.5%', amt: fmtOz(oz), why: `Raise FC ${r.fc.toFixed(1)} to ${target.toFixed(1)} ppm. With CYA ${r.cya}, chlorine below ${(r.cya * 0.075).toFixed(1)} lets algae start.` });
+  }
+  if (!slam && r.cc > 0.5) out.push({ what: 'Liquid chlorine 12.5% (extra)', amt: fmtOz(Math.round(r.cc * 10 * 10.7 * G)), why: `CC ${r.cc.toFixed(1)} means chloramines. Add about 10x CC to break them down.` });
+  if (r.ph > 7.8) {
+    const oz = Math.round(((r.ph - 7.5) / 0.2) * 12 * G * (r.ta / 100));
+    out.push({ what: 'Muriatic acid 31.45%', amt: fmtOz(oz), why: `Bring pH ${r.ph.toFixed(1)} down to about 7.5. Pour in front of a return with the pump running.` });
+  } else if (r.ph < 7.2) {
+    const oz = Math.round(((7.5 - r.ph) / 0.2) * 6 * G);
+    out.push({ what: 'Soda ash', amt: fmtOz(oz), why: `Bring pH ${r.ph.toFixed(1)} up to about 7.5.` });
+  }
+  if (r.ta < 70) {
+    const lb = ((80 - r.ta) / 10) * 1.4 * G;
+    out.push({ what: 'Baking soda', amt: fmtLb(lb), why: `TA ${r.ta} is low, so pH will swing. Raise to about 80 ppm.` });
+  }
+  if (r.cya < 30) {
+    const lb = ((40 - r.cya) / 10) * (13 / 16) * G;
+    out.push({ what: 'Stabilizer (CYA)', amt: fmtLb(lb), why: `Gulf Coast sun burns off unstabilized chlorine fast. Raise CYA to about 40.` });
+  }
+  if (p.san === 'salt' && r.salt > 0 && r.salt < 2800) {
+    const lb = p.gal * 8.34 * (3200 - r.salt) / 1e6;
+    out.push({ what: 'Pool salt', amt: `${Math.ceil(lb / 40)} bags (${Math.round(lb)} lb)`, why: `Salt ${r.salt} is under the cell's 2,700 to 3,400 range. Target 3,200.` });
+  }
+  return { out, target, slam };
+}
+const fmtOz = oz => oz >= 128 ? `${(oz / 128).toFixed(oz >= 256 ? 1 : 2).replace(/\.?0+$/, '')} gal (${oz} oz)` : `${Math.max(oz, 1)} fl oz`;
+const fmtLb = lb => `${(Math.round(lb * 4) / 4).toFixed(2).replace(/\.?0+$/, '')} lb`;
+
+function doseNarrative(p, r, d) {
+  const lines = [];
+  if (d.slam) lines.push(`This is an algae bloom, not just low chlorine. Brush every wall and the spa, then shock. Plan on a return visit in 48 hours.`);
+  if (p.san === 'salt' && r.fc < d.target && !d.slam) lines.push(`The salt cell isn't keeping up. Bump output from ${(p.equip.find(e => /salt cell/i.test(e[0])) || [, 'Output 50%'])[1].match(/\d+/)[0]}% to ${Math.min(100, +((p.equip.find(e => /salt cell/i.test(e[0])) || [, 'Output 50%'])[1].match(/\d+/)[0]) + 20)}% for two weeks, then recheck.`);
+  if (r.cya > 90) lines.push(`CYA ${r.cya} is high from chlorine tabs. Switch this pool to liquid chlorine and plan a partial drain in spring.`);
+  const off = offTarget('psi', r.psi, p, r);
+  if (off) lines.push(`Filter is ${r.psi} psi. ${off === 'Clean the filter' ? 'Clean the cartridge today.' : 'Schedule a filter clean next visit.'}`);
+  if (/New plaster/.test(p.surface)) lines.push(`New plaster: keep pH 7.4 to 7.6 and brush with nylon only for the first month.`);
+  if (!lines.length) lines.push(`Water is close to target. Small top-up only.`);
+  return lines;
+}
+
+/* ---------- State ---------- */
+const state = {
+  mode: 'field', view: 'route', stop: null,
+  order: ['whitfield', 'okafor', 'delgado', 'nguyen', 'haskell', 'patel', 'romero', 'kowalski'],
+  optimized: false, optNote: null,
+  visits: Object.fromEntries(POOLS.map(p => [p.id, { status: 'todo', checks: {}, r: { ...p.today }, doseShown: false, issue: null, report: '', doneAt: null }])),
+  tickets: [{ id: 't1', pool: 'kowalski', title: 'Waterline tile crack', detail: 'Hairline crack, about 8 inches, north wall. Photo on file Oct 28.', kind: 'Remodel quote', col: 'new', src: 'Field, Oct 28' }],
+  office: 'today', cust: 'delgado', q: '', coach: false
+};
+const vis = id => state.visits[id];
+
+/* ---------- Routing math ---------- */
+const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+function routeLen(order) { let d = 0, prev = SHOP; order.forEach(id => { d += dist(prev, BY[id]); prev = BY[id]; }); return d + dist(prev, SHOP); }
+const driveMin = order => Math.round(routeLen(order) * 0.32);
+const workMin = order => order.reduce((s, id) => s + BY[id].mins, 0);
+const hm = m => `${Math.floor(m / 60)}h ${String(m % 60).padStart(2, '0')}m`;
+function optimize() {
+  const before = driveMin(state.order);
+  const left = new Set(state.order); const order = ['delgado']; left.delete('delgado');
+  let cur = BY.delgado;
+  while (left.size) { let best = null, bd = 1e9; left.forEach(id => { let d = dist(cur, BY[id]); if (id === 'okafor') d += 6; if (d < bd) { bd = d; best = id; } }); order.push(best); left.delete(best); cur = BY[best]; }
+  const after = driveMin(order);
+  state.order = order; state.optimized = true;
+  state.optNote = { before, after, lines: [
+    `Delgado goes first. The green pool needs a shock and 8+ hours of circulation, so starting it at 8 AM lets you recheck it on the way back.`,
+    `Okafor moved after 10 AM to respect "no visits before 10".`,
+    `Haskell is grouped with Kemah. Call ahead at stop ${order.indexOf('haskell') + 1}.`,
+    `Drive time drops from ${before} to ${after} minutes (${before - after} saved).`
+  ] };
+}
+
+/* ---------- Field rendering ---------- */
+function mapSvg(order, small) {
+  const pts = [SHOP, ...order.map(id => BY[id]), SHOP].map(p => `${p.x},${p.y * 0.7}`).join(' ');
+  return `<svg class="map" viewBox="0 0 100 70" role="img" aria-label="Route map with ${order.length} stops">
+    <rect class="land" x="0" y="0" width="100" height="70"/>
+    <path class="water" d="M74 0 H100 V70 H92 C86 60 80 52 82 44 C84 36 78 32 72 30 C68 20 70 10 74 0Z"/>
+    <text class="town" x="9" y="16">Friendswood</text><text class="town" x="54" y="7">Webster</text><text class="town" x="58" y="25">Clear Lake</text>
+    <text class="town" x="34" y="46">League City</text><text class="town" x="86" y="41">Kemah</text><text class="town" x="47" y="66">Dickinson</text>
+    <polyline class="route" points="${pts}"/>
+    <rect class="shop" x="${SHOP.x - 1.6}" y="${SHOP.y * 0.7 - 1.6}" width="3.2" height="3.2" rx=".6"><title>Shop, Clear Lake Shores</title></rect>
+    ${order.map((id, i) => { const p = BY[id], v = vis(id); return `<g class="stop ${v.status === 'done' ? 'done' : ''} ${p.flags.some(f => f[0] === 'bad') ? 'flag' : ''}"><circle cx="${p.x}" cy="${p.y * 0.7}" r="2.6"/><text x="${p.x}" y="${p.y * 0.7 + .1}">${i + 1}</text></g>`; }).join('')}
+  </svg>`;
+}
+function flagTags(p) { return p.flags.map(([t, s]) => `<span class="tag tag-${t}">${esc(s)}</span>`).join(''); }
+
+function renderRoute() {
+  const done = state.order.filter(id => vis(id).status === 'done').length;
+  const total = workMin(state.order) + driveMin(state.order);
+  $('#phone').innerHTML = `
+    <div class="ph-head">
+      <div class="day"><h1>Tuesday route</h1><span class="num muted">Nov 18</span></div>
+      <p class="day-sub">Kody &middot; ${state.order.length} pools &middot; about ${hm(total)} with driving &middot; ${done} done</p>
+      <div class="progress" aria-hidden="true">${state.order.map(id => `<span class="${vis(id).status}"></span>`).join('')}</div>
+    </div>
+    <div class="ph-body">
+      ${state.coach ? coachBox('before you leave the shop', ['Truck check: test kit, liquid chlorine, acid, goggles, gloves, pole, brush, net, vacuum head and hose.', 'Acid and chlorine ride in separate bins, never touching. A leak between them makes chlorine gas.', 'Text each customer when you head their way. The app does it from the stop list.']) : ''}
+      <div class="panel">
+        ${mapSvg(state.order)}
+        <div id="opt" style="margin-top:12px">${state.optimized ? optNoteHtml() : `
+          <div class="ai-note"><span class="who">${I.spark}Route assistant</span><p>Rosa Delgado sent a photo of green water this morning and it stormed Sunday. I can reorder today's stops around that.</p></div>
+          <button class="btn btn-ai btn-block" style="margin-top:10px" data-act="optimize">${I.spark}Plan the best order</button>`}</div>
+      </div>
+      <div class="panel"><div class="stops">
+        ${state.order.map((id, i) => { const p = BY[id], v = vis(id); return `
+          <button class="stop-row ${v.status}" data-act="open" data-id="${id}">
+            <span class="stop-n">${v.status === 'done' ? I.check.replace('<svg', '<svg width="16" height="16"') : i + 1}</span>
+            <span><span class="stop-name">${esc(p.name)}</span><span class="stop-meta"> &middot; ${esc(p.area)}</span>
+              <span class="stop-meta" style="display:block">${esc(p.plan)} &middot; ${p.gal.toLocaleString()} gal ${p.san}</span>
+              ${p.flags.length ? `<span class="stop-flags">${flagTags(p)}</span>` : ''}</span>
+            <span class="stop-time">${v.status === 'done' ? esc(v.doneAt) : esc(p.win)}</span>
+          </button>`; }).join('')}
+      </div></div>
+    </div>`;
+}
+function optNoteHtml() {
+  const n = state.optNote;
+  return `<div class="ai-note"><span class="who">${I.spark}Route assistant</span><ul>${n.lines.map(l => `<li>${esc(l)}</li>`).join('')}</ul></div>`;
+}
+
+function readingRow(p, r, x) {
+  if (x.saltOnly && p.san !== 'salt') return '';
+  const v = r[x.k], off = offTarget(x.k, v, p, r);
+  return `<div class="rd" data-rd="${x.k}">
+    <span class="swatch" style="background:${swatch(x.k, v)}" aria-hidden="true"></span>
+    <span class="rd-name">${x.name}<span class="${off ? 'off' : ''}">${off || (x.unit ? x.unit : 'target 7.4 to 7.6')}</span></span>
+    <span class="stepper"><button type="button" data-act="step" data-k="${x.k}" data-d="-1" aria-label="Lower ${x.name}">&minus;</button><output class="num" aria-live="polite">${x.fmt(v)}</output><button type="button" data-act="step" data-k="${x.k}" data-d="1" aria-label="Raise ${x.name}">+</button></span>
+  </div>`;
+}
+/* Coach mode: guidance for a tech in their first weeks */
+const TIPS = {
+  'Skim surface': 'Skim first, before brushing or vacuuming, so leaves don\'t sink. Start on the side the wind blows toward.',
+  'Empty skimmer and pump baskets': 'Pump off before you open the pump lid. Fill the pot with the hose before closing it, or the pump won\'t prime.',
+  'Brush walls, steps and tile line': 'Brush toward the main drain. Corners, steps and behind ladders are where algae starts.',
+  'Vacuum floor': 'Fill the vacuum hose with water before you plug it into the skimmer. Air in the line makes the pump lose prime.',
+  'Vacuum floor and spa': 'Fill the vacuum hose with water before you plug it into the skimmer. Air in the line makes the pump lose prime.',
+  'Check equipment pad': 'Listen for grinding or squealing, look for drips, read the filter gauge. 8 to 10 psi over the clean reading means clean the filter.',
+  'Test water': 'Sample from elbow-deep, away from returns. Always test before adding anything.',
+  'Add chemicals': 'One chemical at a time, pump running, poured in front of a return.'
+};
+const SAFE = [
+  [/^Liquid chlorine/, 'Pour low and slow in front of a return. Keep it off clothes and the deck. It bleaches.'],
+  [/^Muriatic/, 'Goggles and gloves on. Stand upwind and pour low, close to the water.'],
+  [/^Soda ash/, 'Pre-dissolve in a bucket of pool water, or it clouds the pool for a day.'],
+  [/^Baking soda/, 'Broadcast over the deep end. Safe to handle.'],
+  [/^Stabilizer/, 'Dissolves slowly. Put it in a sock in front of a return and leave the filter alone for a week.'],
+  [/^Pool salt/, 'Pour in the shallow end and brush until it dissolves. Turn the salt cell off for 24 hours.']
+];
+const safeFor = what => (SAFE.find(([re]) => re.test(what)) || [, ''])[1];
+const coachBox = (who, items) => `<div class="coach"><span class="who">Coach: ${esc(who)}</span><ul>${items.map(l => `<li>${esc(l)}</li>`).join('')}</ul></div>`;
+
+const CHECKS = p => (/Chemical check/.test(p.plan) ? ['Test water', 'Add chemicals', 'Empty skimmer and pump baskets'] : ['Skim surface', 'Empty skimmer and pump baskets', 'Brush walls, steps and tile line', 'Vacuum floor' + (/Spa/.test(p.equip.map(e => e[0]).join()) ? ' and spa' : ''), 'Check equipment pad']);
+
+function renderStop(id) {
+  const p = BY[id], v = vis(id), n = state.order.indexOf(id) + 1;
+  if (v.status === 'todo') v.status = 'active';
+  const checks = CHECKS(p);
+  $('#phone').innerHTML = `
+    <div class="ph-head">
+      <button class="back" data-act="route">${I.back}Route</button>
+      <div class="cust-h"><div><p class="label">Stop ${n} of ${state.order.length}</p><h1>${esc(p.name)}</h1><p class="muted">${esc(p.addr)}, ${esc(p.area)} &middot; ${esc(p.win)}</p></div>
+        ${p.built.by ? `<span class="tag tag-sc">Built by us ${p.built.year}</span>` : `<span class="tag tag-warn">Built ${p.built.year}, not ours</span>`}</div>
+    </div>
+    <div class="ph-body">
+      ${v.status === 'done' ? `<div class="done-banner">${I.check.replace('<svg', '<svg width="18" height="18"')}Visit finished at ${esc(v.doneAt)}. Report sent.</div>` : ''}
+      <div class="alert" role="note">${I.warn}<div><strong>Before you go in</strong><ul>${p.needs.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div></div>
+      <div class="panel">
+        <div class="facts"><div class="fact"><b>${p.gal.toLocaleString()}</b><span>gallons</span></div><div class="fact"><b>${p.san === 'salt' ? 'Salt' : 'Chlorine'}</b><span>sanitizer</span></div><div class="fact"><b>${esc(p.surface)}</b><span>surface</span></div></div>
+        <div class="equip">${p.equip.map(e => `<div class="equip-row"><b>${esc(e[0])}</b><span class="${/Overheat/.test(e[1]) ? 'tag tag-warn' : ''}">${esc(e[1])}</span><span style="grid-column:1/-1">${esc(e[2])}</span></div>`).join('')}</div>
+      </div>
+      <div class="panel"><div class="panel-head"><h2>Service checklist</h2><span class="num muted" id="ck-count">${Object.values(v.checks).filter(Boolean).length}/${checks.length}</span></div>
+        <div class="checks">${checks.map((c, i) => `<button type="button" class="check" data-act="check" data-i="${i}" aria-pressed="${!!v.checks[i]}"><span class="box">${I.check}</span>${esc(c)}</button>${state.coach && TIPS[c] ? `<p class="coach-tip">${esc(TIPS[c])}</p>` : ''}`).join('')}</div>
+      </div>
+      <div class="panel"><div class="panel-head"><h2>Water test</h2><span class="muted" style="font-size:.82rem">last visit ${VISIT_DATES[VISIT_DATES.length - 2] || ''}</span></div>
+        ${state.coach ? `<div style="margin-bottom:10px">${coachBox('testing', ['Fill the sample from elbow-deep, away from returns and the skimmer.', 'Chlorine turns the sample pink, pH turns it yellow to red. Match the color in good light, not in the sun.', 'Reagents go bad after about a year. Check the date on the bottles.'])}</div>` : ''}
+        <div class="readings" id="readings">${READ.map(x => readingRow(p, v.r, x)).join('')}</div>
+        <div id="dose-box" style="margin-top:12px">${v.doseShown ? doseHtml(p, v.r) : `<button class="btn btn-ai btn-block" data-act="dose">${I.spark}What do I add?</button>`}</div>
+      </div>
+      <div class="panel" id="issue-box">${issueHtml(p, v)}</div>
+    </div>
+    <div class="ph-foot">
+      <button class="btn btn-line" data-act="issue">Report a problem</button>
+      <button class="btn btn-primary" data-act="finish">${v.status === 'done' ? 'View report' : 'Finish visit'}</button>
+    </div>`;
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+function doseHtml(p, r) {
+  const d = doses(p, r), notes = doseNarrative(p, r, d);
+  return `<div class="ai-note"><span class="who">${I.spark}Dosing assistant</span>
+    <p>For ${p.gal.toLocaleString()} gal ${p.surface.toLowerCase()}, ${p.san === 'salt' ? 'salt' : 'chlorine'} pool. FC target ${d.target.toFixed(1)} ppm for CYA ${r.cya}.</p>
+    ${state.coach && d.out.some(x => /^Muriatic/.test(x.what)) ? `<div class="never" role="note"><strong>Never do this</strong><ul><li>Never mix acid and chlorine, not in a bucket, not in the same spot. Together they make chlorine gas.</li><li>Add chlorine first. Wait 10 minutes with the pump running, then add acid at a different return.</li><li>Acid goes into water. Never add water to acid.</li></ul></div>` : ''}
+    ${d.out.length ? `<div class="doses">${d.out.map(x => `<div class="dose"><strong>${esc(x.what)}</strong><b>${esc(x.amt)}</b><span>${esc(x.why)}</span>${state.coach && safeFor(x.what) ? `<span class="safe">${esc(safeFor(x.what))}</span>` : ''}</div>`).join('')}</div>` : '<p><strong>Nothing to add today.</strong></p>'}
+    <ul>${notes.map(l => `<li>${esc(l)}</li>`).join('')}</ul>
+    <p class="muted" style="font-size:.8rem">Updates as you change readings. Retest pH 30 minutes after acid.</p></div>`;
+}
+function issueHtml(p, v) {
+  if (!v.issue) return `<div class="panel-head" style="margin:0"><h2>Problems</h2><span class="muted" style="font-size:.85rem">none reported</span></div>`;
+  const s = SCEN[v.issue.k];
+  return `<div class="panel-head"><h2>Problem reported</h2><span class="tag ${s.tag}">${esc(s.sev)}</span></div>
+    <div class="ai-note"><span class="who">${I.spark}Issue assistant</span>
+      <p><strong>${esc(s.cause)}</strong> <span class="muted">(${esc(s.conf)})</span></p>
+      <ul>${s.steps(p).map(l => `<li>${esc(l)}</li>`).join('')}</ul></div>
+    ${s.ticket ? (v.issue.sent ? `<p class="tag tag-good" style="margin-top:10px">Sent to ${esc(s.ticket.kind === 'Warranty repair' ? 'the build crew' : 'the office')}. Ticket in Repairs.</p>`
+      : `<button class="btn btn-primary btn-block" style="margin-top:10px" data-act="ticket">${esc(s.ticket.cta(p))}</button>`) : ''}`;
+}
+
+/* Issue scenarios (scripted AI) */
+const SCEN = {
+  green: { label: 'Green water', sev: 'Recovery', tag: 'tag-bad', cause: 'Algae bloom after chlorine ran out', conf: 'high confidence: green tint, FC 0, CC 1.5',
+    steps: p => [`Brush every wall, step and the spa so the chlorine can reach the algae.`, `Shock to 24 ppm FC (about ${fmtOz(Math.round(24 * 10.7 * p.gal / 10000))} of liquid chlorine). The dosing card shows the exact amount.`, `Run the pump 24 hours. Clean the filter tomorrow, since it will load up fast.`, `Recovery work gets quoted separately per the plan terms. I drafted a note for the office.`],
+    ticket: { kind: 'Green-to-clean', cta: () => 'Send recovery quote to office', title: 'Green-to-clean recovery', detail: 'Algae after storm. Shocked today, return visit in 48 h. Quote recovery labor.' } },
+  pump: { label: 'Pump display', sev: 'Warranty', tag: 'tag-warn', cause: 'IntelliFlo drive overheating', conf: 'likely: repeat "Drive Overheat" two visits in a row',
+    steps: p => [`Check that nothing is blocking airflow around the drive: leaves, a cover or a storage bin against the pad.`, `Clear the fan shroud and look for the drive's cooling fan spinning at startup.`, `If it trips again, the drive is the likely failure. This pump was installed by Southern Charm and is under warranty${p.built.by ? ` (${p.equip[0][2]})` : ''}.`],
+    ticket: { kind: 'Warranty repair', cta: p => p.built.by ? 'Send warranty repair to build crew' : 'Send repair request to office', title: 'IntelliFlo drive overheat', detail: 'Repeat Drive Overheat error. Airflow cleared, error returned. Likely drive replacement under Pentair warranty.' } },
+  tile: { label: 'Tile crack', sev: 'Remodel lead', tag: 'tag-sc', cause: 'Hairline crack in waterline tile', conf: 'medium: compare with Oct 28 photo',
+    steps: () => [`Photos taken from the same spot as Oct 28 show the crack about 2 inches longer.`, `Cosmetic for now, but water behind tile can loosen more of it through winter.`, `Good remodel opportunity: tile and coping refresh. The office can send a quote.`],
+    ticket: { kind: 'Remodel quote', cta: () => 'Send remodel lead to office', title: 'Waterline tile crack growing', detail: 'Crack about 10 inches now, up from 8. Owner open to a tile refresh quote.' } }
+};
+
+function openIssueSheet(id) {
+  const p = BY[id];
+  $('#sheet-root').innerHTML = `<div class="sheet-bg" data-act="close-sheet"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-t" data-stop>
+    <span class="sheet-grab"></span>
+    <h2 id="sh-t">Report a problem</h2>
+    <p class="muted">Snap a photo and the assistant suggests the cause and next step. These are demo photos.</p>
+    <div class="shots">
+      <button class="shot" type="button" data-act="pick" data-k="green" aria-pressed="false"><img class="green" src="img/pool3.jpg" alt="Pool with green-tinted water"><span>Green water</span></button>
+      <button class="shot" type="button" data-act="pick" data-k="pump" aria-pressed="false"><span class="display">IntelliFlo3<br>ALERT<br>Drive Overheat</span><span>Pump display</span></button>
+      <button class="shot" type="button" data-act="pick" data-k="tile" aria-pressed="false"><img class="crack" src="img/pool2.jpg" alt="Waterline tile close-up"><span>Tile crack</span></button>
+    </div>
+    <div id="pick-out"></div>
+  </div></div>`;
+  $('.sheet button').focus();
+}
+function closeSheet() { $('#sheet-root').innerHTML = ''; }
+
+function reportText(p, v) {
+  const d = doses(p, v.r), checks = CHECKS(p).filter((_, i) => v.checks[i]);
+  const first = p.name.split(' ')[0];
+  const PAST = { 'Skim surface': 'skimmed the surface', 'Empty skimmer and pump baskets': 'emptied the skimmer and pump baskets', 'Brush walls, steps and tile line': 'brushed the walls, steps and tile line', 'Vacuum floor': 'vacuumed the floor', 'Vacuum floor and spa': 'vacuumed the floor and spa', 'Check equipment pad': 'checked the equipment', 'Test water': 'tested the water', 'Add chemicals': 'balanced the chemicals' };
+  const parts = ['tested the water', ...checks.map(c => PAST[c] || c.toLowerCase()).filter(x => x !== 'tested the water')];
+  const did = parts.length > 1 ? parts.slice(0, -1).join(', ') + ' and ' + parts[parts.length - 1] : parts[0];
+  const added = d.out.length ? d.out.map(x => `${x.amt.replace(/ \(.*\)/, '')} ${x.what.toLowerCase().replace(' (extra)', '')}`).join(', ') : 'nothing needed today';
+  let s = `Hi ${first}, your pool was serviced today at ${nowTime()}.\n\nWe ${did}.\nWater: FC ${v.r.fc.toFixed(1)}, pH ${v.r.ph.toFixed(1)}, alkalinity ${v.r.ta}${p.san === 'salt' ? `, salt ${v.r.salt}` : ''}.\nAdded: ${added}.`;
+  const psiOff = offTarget('psi', v.r.psi, p, v.r);
+  if (psiOff) s += `\nFilter pressure is ${v.r.psi} psi, so we'll clean the filter ${psiOff === 'Clean the filter' ? 'today' : 'next visit'}.`;
+  if (v.issue) s += `\n\nWe noticed: ${SCEN[v.issue.k].cause.toLowerCase()}. ${v.issue.sent ? 'Our office will reach out about next steps.' : ''}`;
+  if (/latched/.test(p.needs.join())) s += `\n\nSide gate is latched behind us.`;
+  return s + `\n\nKody, Southern Charm Pool Care\n281-595-7665`;
+}
+function fmtClock(t) { let h = Math.floor(t / 60), m = t % 60; const ap = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12; return `${h}:${String(m).padStart(2, '0')} ${ap}`; }
+function eta(id) { let t = 8 * 60, prev = SHOP; for (const x of state.order) { t += Math.round(dist(prev, BY[x]) * 0.32); if (x === id) return t + BY[x].mins; t += BY[x].mins; prev = BY[x]; } return t; }
+function nowTime() { return fmtClock(eta(state.stop)); }
+
+function openReport(id) {
+  const p = BY[id], v = vis(id);
+  const sent = v.status === 'done';
+  $('#sheet-root').innerHTML = `<div class="sheet-bg" data-act="close-sheet"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="rp-t" data-stop>
+    <span class="sheet-grab"></span>
+    <h2 id="rp-t">${sent ? 'Visit report' : 'Customer report'}</h2>
+    <div id="rp-body">${sent ? '' : `<span class="thinking">Writing report<i></i><i></i><i></i></span>`}</div>
+  </div></div>`;
+  const fill = () => {
+    $('#rp-body').innerHTML = `<div class="ai-note" style="margin-bottom:10px"><span class="who">${I.spark}Report writer</span><p>Drafted from your checklist, readings and notes. Edit anything before it sends.</p></div>
+      <label class="label" for="rp-text">Text to ${esc(p.name)}</label>
+      <textarea class="report" id="rp-text" ${sent ? 'readonly' : ''}>${esc(v.report || reportText(p, v))}</textarea>
+      ${sent ? '' : `<button class="btn btn-primary btn-block" style="margin-top:10px" data-act="send">Send and finish visit</button>`}`;
+  };
+  if (sent) fill(); else setTimeout(fill, 900);
+}
+
+/* ---------- Office rendering ---------- */
+function renderOffice() {
+  const openTickets = state.tickets.filter(t => t.col !== 'done').length;
+  $('#office').innerHTML = `
+    <div class="tabs" role="tablist">
+      <button role="tab" data-act="otab" data-t="today" aria-selected="${state.office === 'today'}">Today</button>
+      <button role="tab" data-act="otab" data-t="customers" aria-selected="${state.office === 'customers'}">Customers</button>
+      <button role="tab" data-act="otab" data-t="repairs" aria-selected="${state.office === 'repairs'}">Repairs and leads${openTickets ? `<span class="count">${openTickets}</span>` : ''}</button>
+    </div>
+    <div id="o-body">${state.office === 'today' ? officeToday() : state.office === 'customers' ? officeCustomers() : officeRepairs()}</div>`;
+}
+function officeToday() {
+  const done = state.order.filter(id => vis(id).status === 'done').length;
+  const attn = [];
+  state.order.forEach(id => {
+    const p = BY[id], v = vis(id);
+    if (p.flags.some(f => f[0] === 'bad') && v.status !== 'done') attn.push({ id, tag: 'tag-bad', t: 'Green pool reported', d: `${p.name} sent a photo this morning. Kody is routed there first.` });
+    const psi = offTarget('psi', v.r.psi, p, v.r); if (psi) attn.push({ id, tag: 'tag-warn', t: 'Filter pressure climbing', d: `${p.name}: ${p.hist.psi.join(', ')} psi over six visits. Book a filter clean (Full service plus does this quarterly).` });
+    if (v.r.cya > 90) attn.push({ id, tag: 'tag-warn', t: 'Stabilizer too high', d: `${p.name}: CYA ${v.r.cya} from chlorine tabs. Suggest switching to liquid and a spring partial drain.` });
+  });
+  attn.push({ id: 'haskell', tag: 'tag-sc', t: 'Warranty check due', d: 'Margaret Haskell: IntelliFlo threw Drive Overheat last week. Under warranty to Aug 2027 (build SC-0431).' });
+  return `<div class="o-grid">
+    <div>
+      <div class="o-title"><h2>Kody's Tuesday route</h2><span class="muted">${done} of ${state.order.length} done${state.optimized ? ' &middot; reordered by assistant' : ''}</span></div>
+      <div class="board">
+        <div class="board-row head"><span>#</span><span>Customer</span><span class="hide-sm">Plan</span><span>Status</span></div>
+        ${state.order.map((id, i) => { const p = BY[id], v = vis(id); return `<div class="board-row"><span class="num muted">${i + 1}</span>
+          <span><b>${esc(p.name)}</b><span class="muted" style="display:block;font-size:.82rem">${esc(p.area)}${p.built.by ? ' &middot; our build' : ''}</span></span>
+          <span class="hide-sm muted">${esc(p.plan)}</span>
+          <span class="status ${v.status}">${v.status === 'done' ? esc(v.doneAt) : v.status === 'active' ? 'On site' : 'Upcoming'}</span></div>`; }).join('')}
+      </div>
+      <div style="margin-top:16px" class="panel">${mapSvg(state.order)}</div>
+    </div>
+    <div>
+      <div class="o-title"><h2>Needs attention</h2><span class="tag tag-ai">${I.spark}Flagged by assistant</span></div>
+      <div class="attn">${attn.map(a => `<div class="attn-item"><div class="row"><h3>${esc(a.t)}</h3><span class="tag ${a.tag}">${esc(BY[a.id].area)}</span></div><p>${esc(a.d)}</p>
+        <div class="attn-actions"><button class="btn btn-line btn-sm" data-act="ocust" data-id="${a.id}">Open customer</button></div></div>`).join('')}</div>
+    </div>
+  </div>`;
+}
+function chart(p) {
+  const W = 300, H = 110, pad = 22, n = p.hist.fc.length;
+  const xs = i => pad + (i * (W - pad * 2)) / Math.max(n - 1, 1);
+  const yFc = v => H - 18 - (v / 6) * (H - 34);
+  const yPh = v => H - 18 - ((v - 7.0) / 1.0) * (H - 34);
+  const fcPts = p.hist.fc.map((v, i) => `${xs(i)},${yFc(v)}`).join(' ');
+  const phPts = p.hist.ph.map((v, i) => `${xs(i)},${yPh(v)}`).join(' ');
+  const dates = VISIT_DATES.slice(-n);
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Free chlorine and pH over the last ${n} visits">
+    <rect class="band" x="${pad}" y="${yPh(7.6)}" width="${W - pad * 2}" height="${yPh(7.4) - yPh(7.6)}"/>
+    <text x="${W - pad + 3}" y="${yPh(7.5) + 3}">pH ok</text>
+    <polyline class="ln" points="${phPts}" stroke="#d9480f"/>
+    <polyline class="ln" points="${fcPts}" stroke="#c2185b"/>
+    ${p.hist.fc.map((v, i) => `<circle class="dot" cx="${xs(i)}" cy="${yFc(v)}" r="3.5" fill="#c2185b"/>`).join('')}
+    ${p.hist.ph.map((v, i) => `<circle class="dot" cx="${xs(i)}" cy="${yPh(v)}" r="3.5" fill="#d9480f"/>`).join('')}
+    <text x="${xs(n - 1) - 4}" y="${yFc(p.hist.fc[n - 1]) - 7}" text-anchor="end">FC ${p.hist.fc[n - 1].toFixed(1)}</text>
+    <text x="${xs(n - 1) - 4}" y="${yPh(p.hist.ph[n - 1]) + 13}" text-anchor="end">pH ${p.hist.ph[n - 1].toFixed(1)}</text>
+    ${dates.map((d, i) => `<text x="${xs(i)}" y="${H - 3}" text-anchor="middle">${d}</text>`).join('')}
+  </svg>`;
+}
+function officeCustomers() {
+  const list = POOLS.filter(p => (p.name + p.area).toLowerCase().includes(state.q.toLowerCase()));
+  const p = BY[state.cust], v = vis(p.id);
+  const log = [];
+  if (v.status === 'done') log.push({ when: `Nov 18 ${v.doneAt}`, txt: v.report.split('\n').slice(0, 4).join(' ') });
+  log.push({ when: 'Nov 11', txt: `Serviced. FC ${p.hist.fc[p.hist.fc.length - 1].toFixed(1)}, pH ${p.hist.ph[p.hist.ph.length - 1].toFixed(1)}, filter ${p.hist.psi[p.hist.psi.length - 1]} psi.` });
+  log.push({ when: 'Nov 4', txt: `Serviced. FC ${p.hist.fc[p.hist.fc.length - 2].toFixed(1)}, pH ${p.hist.ph[p.hist.ph.length - 2].toFixed(1)}. Report sent by text.` });
+  if (p.built.by) log.push({ when: String(p.built.year), txt: `Pool built by Southern Charm Pools, build ${p.built.no}. Equipment and warranty imported from the build record.` });
+  return `<div class="cust-layout">
+    <div><label class="sr" for="cq" style="position:absolute;left:-9999px">Search customers</label>
+      <input class="search" id="cq" type="search" placeholder="Search name or area" value="${esc(state.q)}" data-act="search">
+      <div class="cust-list">${list.map(c => `<button class="cust-item" data-act="ocust" data-id="${c.id}" aria-current="${c.id === p.id}"><b>${esc(c.name)}</b>${c.built.by ? '<span class="tag tag-sc">Our build</span>' : '<span></span>'}<span>${esc(c.area)} &middot; ${esc(c.plan)}</span></button>`).join('') || '<p class="empty">No customers match.</p>'}</div>
+    </div>
+    <div class="profile">
+      <div class="profile-head"><div><h2>${esc(p.name)}</h2><p class="muted">${esc(p.addr)}, ${esc(p.area)} &middot; ${esc(p.plan)} &middot; ${p.gal.toLocaleString()} gal ${p.san}</p></div>
+        ${p.built.by ? `<span class="tag tag-sc">Build ${esc(p.built.no)}, ${p.built.year}</span>` : `<span class="tag tag-warn">Built ${p.built.year} by another builder</span>`}</div>
+      <div class="alert" role="note">${I.warn}<div><strong>Special instructions</strong><ul>${p.needs.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div></div>
+      <div class="two">
+        <div class="panel"><div class="panel-head"><h2>Equipment</h2><span class="muted" style="font-size:.82rem">${p.built.by ? 'from build record' : 'entered at first visit'}</span></div>
+          <div class="equip">${p.equip.map(e => `<div class="equip-row"><b>${esc(e[0])}</b><span>${esc(e[1])}</span><span style="grid-column:1/-1" class="${/Warranty to/.test(e[2]) ? '' : 'muted'}">${esc(e[2])}</span></div>`).join('')}</div></div>
+        <div class="panel"><div class="panel-head"><h2>Water history</h2><span class="muted" style="font-size:.82rem"><span style="color:#c2185b">&#9679;</span> FC <span style="color:#d9480f">&#9679;</span> pH</span></div>${chart(p)}
+          <p class="muted" style="font-size:.85rem;margin-top:6px">${p.hist.fc[p.hist.fc.length - 1] < p.hist.fc[0] - 1.5 ? 'Chlorine has slid for several weeks. Check cell output and filter.' : 'Steady over the last visits.'}</p></div>
+      </div>
+      <div class="panel"><div class="panel-head"><h2>Visit log</h2></div><div class="log">${log.map(l => `<div class="log-row"><span class="when">${esc(l.when)}</span><p>${esc(l.txt)}</p></div>`).join('')}</div></div>
+    </div>
+  </div>`;
+}
+function officeRepairs() {
+  const cols = [['new', 'New from the field'], ['sched', 'Scheduled'], ['done', 'Done']];
+  return `<div class="o-title"><h2>Repairs and leads</h2><span class="muted">Problems found on routes go to the build crew or become quotes.</span></div>
+  <div class="tickets">${cols.map(([c, label]) => { const ts = state.tickets.filter(t => t.col === c); return `<div class="col"><h3>${label}<span class="num muted">${ts.length}</span></h3><div class="col-body">
+    ${ts.map(t => { const p = BY[t.pool]; return `<div class="ticket"><div style="display:flex;justify-content:space-between;gap:8px"><b>${esc(t.title)}</b><span class="tag ${t.kind === 'Warranty repair' ? 'tag-warn' : t.kind === 'Remodel quote' ? 'tag-sc' : 'tag-bad'}">${esc(t.kind)}</span></div>
+      <p>${esc(p.name)}, ${esc(p.area)}${p.built.by ? ` &middot; build ${esc(p.built.no)}` : ''}</p><p>${esc(t.detail)}</p><p class="num" style="font-size:.78rem">${esc(t.src)}</p>
+      ${c === 'new' ? `<button class="btn btn-primary btn-sm" data-act="tmove" data-id="${t.id}" data-to="sched">${t.kind === 'Warranty repair' ? 'Assign to build crew, Thu' : t.kind === 'Remodel quote' ? 'Send quote' : 'Schedule return visit'}</button>` : c === 'sched' ? `<button class="btn btn-line btn-sm" data-act="tmove" data-id="${t.id}" data-to="done">Mark done</button>` : ''}</div>`; }).join('') || '<p class="empty">Nothing here.</p>'}
+  </div></div>`; }).join('')}</div>`;
+}
+
+/* ---------- Events ---------- */
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast.h); toast.h = setTimeout(() => t.hidden = true, 2600); }
+function setMode(m) {
+  state.mode = m;
+  $$('[data-mode]').forEach(b => b.setAttribute('aria-pressed', b.dataset.mode === m));
+  $('#field').hidden = m !== 'field'; $('#office').hidden = m !== 'office';
+  if (m === 'office') renderOffice();
+  else if (state.view === 'stop') renderStop(state.stop); else renderRoute();
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+document.addEventListener('click', e => {
+  const m = e.target.closest('[data-mode]'); if (m) return setMode(m.dataset.mode);
+  if (e.target.closest('[data-coach]')) {
+    state.coach = !state.coach; $('[data-coach]').setAttribute('aria-pressed', state.coach);
+    if (state.mode === 'field') { const y = scrollY; if (state.view === 'stop') renderStop(state.stop); else renderRoute(); window.scrollTo({ top: y, behavior: 'instant' }); }
+    return toast(state.coach ? 'Coach on: tips and safety notes for a new tech' : 'Coach off');
+  }
+  const a = e.target.closest('[data-act]'); if (!a) return;
+  const act = a.dataset.act;
+  if (act === 'close-sheet') { if (e.target === a) closeSheet(); return; }
+  const p = state.stop && BY[state.stop], v = state.stop && vis(state.stop);
+  switch (act) {
+    case 'optimize': {
+      $('#opt').innerHTML = `<div class="ai-note"><span class="thinking">Checking stops, time windows and the green pool<i></i><i></i><i></i></span></div>`;
+      setTimeout(() => { optimize(); const y = scrollY; renderRoute(); window.scrollTo({ top: y, behavior: 'instant' }); }, 1100); break;
+    }
+    case 'open': state.view = 'stop'; state.stop = a.dataset.id; renderStop(state.stop); break;
+    case 'route': state.view = 'route'; state.stop = null; renderRoute(); window.scrollTo({ top: 0, behavior: 'instant' }); break;
+    case 'check': {
+      const i = a.dataset.i; v.checks[i] = !v.checks[i]; a.setAttribute('aria-pressed', !!v.checks[i]);
+      $('#ck-count').textContent = `${Object.values(v.checks).filter(Boolean).length}/${CHECKS(p).length}`; break;
+    }
+    case 'step': {
+      const x = READ.find(r => r.k === a.dataset.k), d = +a.dataset.d;
+      v.r[x.k] = Math.min(x.max, Math.max(x.min, Math.round((v.r[x.k] + d * x.step) * 10) / 10));
+      $$('#readings .rd').forEach(row => { const rx = READ.find(r => r.k === row.dataset.rd); const val = v.r[rx.k], off = offTarget(rx.k, val, p, v.r);
+        $('output', row).textContent = rx.fmt(val); $('.swatch', row).style.background = swatch(rx.k, val);
+        const s = $('.rd-name span', row); s.textContent = off || (rx.unit ? rx.unit : 'target 7.4 to 7.6'); s.className = off ? 'off' : ''; });
+      if (v.doseShown) $('#dose-box').innerHTML = doseHtml(p, v.r); break;
+    }
+    case 'dose': {
+      $('#dose-box').innerHTML = `<div class="ai-note"><span class="thinking">Working out doses for ${p.gal.toLocaleString()} gallons<i></i><i></i><i></i></span></div>`;
+      setTimeout(() => { v.doseShown = true; $('#dose-box').innerHTML = doseHtml(p, v.r); }, 800); break;
+    }
+    case 'issue': openIssueSheet(state.stop); break;
+    case 'pick': {
+      $$('.shot').forEach(s => s.setAttribute('aria-pressed', s === a));
+      const k = a.dataset.k, s = SCEN[k];
+      $('#pick-out').innerHTML = `<div class="ai-note"><span class="thinking">Looking at the photo<i></i><i></i><i></i></span></div>`;
+      setTimeout(() => {
+        $('#pick-out').innerHTML = `<div class="ai-note"><span class="who">${I.spark}Issue assistant</span><p><strong>${esc(s.cause)}</strong> <span class="muted">(${esc(s.conf)})</span></p><ul>${s.steps(p).map(l => `<li>${esc(l)}</li>`).join('')}</ul></div>
+          <button class="btn btn-primary btn-block" style="margin-top:10px" data-act="attach" data-k="${k}">Add to this visit</button>`;
+      }, 1000); break;
+    }
+    case 'attach': v.issue = { k: a.dataset.k, sent: false }; closeSheet(); $('#issue-box').innerHTML = issueHtml(p, v); $('#issue-box').scrollIntoView({ behavior: 'instant', block: 'center' }); break;
+    case 'ticket': {
+      const s = SCEN[v.issue.k];
+      state.tickets.unshift({ id: 't' + Date.now(), pool: p.id, title: s.ticket.title, detail: s.ticket.detail, kind: s.ticket.kind, col: 'new', src: `Field, Nov 18 ${nowTime()}` });
+      v.issue.sent = true; $('#issue-box').innerHTML = issueHtml(p, v); toast(s.ticket.kind === 'Warranty repair' ? 'Sent to the build crew' : 'Sent to the office'); break;
+    }
+    case 'finish': openReport(state.stop); break;
+    case 'send': {
+      v.report = $('#rp-text').value; v.status = 'done'; v.doneAt = nowTime(); closeSheet();
+      toast(`Report texted to ${p.name.split(' ')[0]} (demo)`); state.view = 'route'; state.stop = null; renderRoute(); window.scrollTo({ top: 0, behavior: 'instant' }); break;
+    }
+    case 'otab': state.office = a.dataset.t; renderOffice(); break;
+    case 'ocust': state.office = 'customers'; state.cust = a.dataset.id; renderOffice(); window.scrollTo({ top: 0, behavior: 'instant' }); break;
+    case 'tmove': { const t = state.tickets.find(t => t.id === a.dataset.id); t.col = a.dataset.to; renderOffice(); toast(a.dataset.to === 'sched' ? 'Scheduled' : 'Marked done'); break; }
+  }
+});
+document.addEventListener('input', e => {
+  if (e.target.dataset.act === 'search') { state.q = e.target.value; const pos = e.target.selectionStart; renderOffice(); const s = $('#cq'); s.focus(); s.setSelectionRange(pos, pos); }
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && $('#sheet-root').innerHTML) closeSheet(); });
+
+renderRoute();
+})();
+</script>
+
+</body>
+</html>

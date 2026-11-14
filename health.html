@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Website and Listings Health Check</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700&family=Figtree:wght@400;600&display=swap">
+<style>
+:root { --bg: #f6f9fc; --ink: #0f2a44; --muted: #3f5b75; --line: #d3e0eb; --accent: #0a69ad; --surface: #fff; }
+@media (prefers-color-scheme: dark) { :root { --bg: #0a1826; --ink: #e9f2f9; --muted: #b0c5d8; --line: #24425e; --accent: #57b4f2; --surface: #10243a; } }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.65 Figtree, "Segoe UI", system-ui, sans-serif; }
+main { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; }
+.back { display: inline-block; margin-bottom: 16px; color: var(--accent); font-weight: 600; text-decoration: none; }
+h1, h2, h3 { font-family: Outfit, "Segoe UI", sans-serif; line-height: 1.2; }
+h1 { font-size: 2rem; } h2 { margin-top: 2.2em; padding-top: 1em; border-top: 1px solid var(--line); }
+hr { display: none; } a { color: var(--accent); } li { margin: 4px 0; } code { font-size: .9em; }
+table { width: 100%; border-collapse: collapse; display: block; overflow-x: auto; font-size: .92rem; background: var(--surface); }
+th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+</style>
+</head>
+<body><main><a class="back" href="./">&larr; Back</a>
+<h1 id="southern-charm-pools-website-and-listings-health-check">Southern Charm Pools: website and listings health check</h1>
+<p>Checked November 14, 2026, from public data only: a crawl of southerncharmpools.com (82 pages, 246 links), Google PageSpeed, and public listings on Google, Bing, Apple Maps, BBB and directory sites. No logins were used, so anything inside their Google, Bing or Apple accounts still needs a look with the owner.</p>
+<h2 id="the-short-version">The short version</h2>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Grade</th>
+<th>Biggest problem</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Google Business Profile</td>
+<td>Good, with fixes</td>
+<td>Hours don't match the website; the site understates the review count</td>
+</tr>
+<tr>
+<td>Apple Maps</td>
+<td><strong>Needs action</strong></td>
+<td>Not claimed. Apple pulls their info from Yelp and lists the city as Kemah</td>
+</tr>
+<tr>
+<td>Bing Places</td>
+<td><strong>Needs fixes</strong></td>
+<td>Lists "Chimney Construction", "Carpet Repair" and "Water Heaters" as services</td>
+</tr>
+<tr>
+<td>Other directories</td>
+<td>Needs cleanup</td>
+<td>Wrong addresses floating around; a second "Southern Charm Pools" Facebook page</td>
+</tr>
+<tr>
+<td>Website: search basics</td>
+<td><strong>Needs work</strong></td>
+<td>No business info for Google (LocalBusiness schema); most pages have no description; 86% of images have no alt text</td>
+</tr>
+<tr>
+<td>Website: broken things</td>
+<td>Needs fixes</td>
+<td>Dead PDF, dead images, broken lender phone link, WordPress sample page still live</td>
+</tr>
+<tr>
+<td>Website: speed on phones</td>
+<td><strong>Poor</strong></td>
+<td>Main image takes 14 seconds to appear on mobile; 4 MB home page</td>
+</tr>
+<tr>
+<td>Email setup</td>
+<td>Needs a fix</td>
+<td>No DMARC record on either domain</td>
+</tr>
+<tr>
+<td>Security</td>
+<td>OK, with fixes</td>
+<td>Firewall in place; admin username and WordPress version are publicly visible</td>
+</tr>
+</tbody>
+</table>
+<h2 id="1-listings-google-bing-apple-and-the-rest">1. Listings (Google, Bing, Apple and the rest)</h2>
+<p>These matter more than the website for "pool builder near me" searches.</p>
+<h3 id="google-business-profile">Google Business Profile</h3>
+<ul>
+<li>4.9 stars from <strong>114 reviews</strong>. Category "Swimming pool contractor", address and phone are correct.</li>
+<li><strong>Hours don't match.</strong> Google says Mon to Fri, 8:30 AM to 5:30 PM. The website header says 9 AM to 5 PM. Pick one and make them match everywhere.</li>
+<li>The site and the redesign say "105 reviews". That's now out of date; it should be 114.</li>
+<li>The profile shows an "Own this business?" link to the public. They post updates, so it's probably verified, but <strong>confirm someone in the family has owner access</strong>, not only the web vendor.</li>
+<li>Profile links point to X (Twitter), Instagram and YouTube. The website's own links to Twitter don't work (see section 2).</li>
+</ul>
+<h3 id="apple-maps-iphone-users-siri-carplay">Apple Maps (iPhone users, Siri, CarPlay)</h3>
+<ul>
+<li><strong>Unclaimed.</strong> The listing shows "Claim This Place". Apple fills it in from Yelp.</li>
+<li>City shows as <strong>Kemah</strong> instead of Clear Lake Shores.</li>
+<li>No photos, no hours, no description of their own.</li>
+<li><strong>Fix:</strong> claim it free at Apple Business Connect (businessconnect.apple.com), correct the city, and add hours, logo, photos and a description.</li>
+</ul>
+<h3 id="bing-places-bing-windows-search-chatgpt-and-copilot-answers">Bing Places (Bing, Windows search, ChatGPT and Copilot answers)</h3>
+<ul>
+<li>Claimed and verified. Address and phone are correct.</li>
+<li><strong>Wrong services listed:</strong> Chimney Construction, Carpet Repair, Water Heaters. Remove them; add pool construction, remodels, outdoor kitchens and equipment repair.</li>
+<li>Hours open 8:30 AM: matches Google, not the website.</li>
+<li><strong>Fix:</strong> log in at bingplaces.com (it can import straight from Google Business Profile).</li>
+</ul>
+<h3 id="bbb">BBB</h3>
+<ul>
+<li>A+ rating, correct address and phone.</li>
+<li>The listing doesn't show BBB <strong>accreditation</strong>. Saying "BBB A+" is fine; don't call it "accredited" unless they've paid for accreditation. (The redesign says "accredited rating" and needs that word changed.)</li>
+</ul>
+<h3 id="directory-cleanup">Directory cleanup</h3>
+<ul>
+<li><strong>Wheree.com</strong> lists three wrong addresses (5201 McCart Ave; 1010 Marina Bay Dr; 1002 Aspen Rd). Old addresses confuse Google about where the business is.</li>
+<li><strong>Facebook:</strong> search shows a second "Southern Charm Pools" page that talks about "pilas" and serving "all of South Texas" with "over 20 years" in the business. It may be another company with the same name. Confirm which page is theirs, and report it to Facebook if it's pretending to be them.</li>
+<li><strong>Houzz:</strong> 4.8 from 6 reviews. Fine, but worth asking a few happy customers to post there too.</li>
+<li><strong>Yelp</strong> blocked our check. Look at it by hand, since Apple Maps copies whatever Yelp says.</li>
+</ul>
+<h2 id="2-website-broken-or-wrong">2. Website: broken or wrong</h2>
+<table>
+<thead>
+<tr>
+<th>Problem</th>
+<th>Where</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IntelliCenter user guide PDF is missing (404)</td>
+<td>/user-guides/</td>
+<td>Re-upload the PDF or remove the link</td>
+</tr>
+<tr>
+<td>4 photos don't load: they're pulled from another website (leodotstudio.com) that's down</td>
+<td>/pool-freeze-protection/</td>
+<td>Upload the photos to their own site</td>
+</tr>
+<tr>
+<td>Lender phone link dials a 9-digit number: shows (713) 715-8318 but dials 713715-831</td>
+<td>/financing/</td>
+<td>Fix the link</td>
+</tr>
+<tr>
+<td>Social links point to an old http://twitter.com address; no link to the <strong>Instagram</strong> they actually post on</td>
+<td>Header on 79 pages</td>
+<td>Switch to x.com (if the account is still used) and add Instagram</td>
+</tr>
+<tr>
+<td>WordPress's default <strong>"Sample Page"</strong> is live ("I'm a bike messenger by day, aspiring actor by night...")</td>
+<td>/sample-page/</td>
+<td>Delete it</td>
+</tr>
+<tr>
+<td>Header address leaves out the city: "1005 Aspen Rd Suite B, TX 77565"</td>
+<td>Every page</td>
+<td>Add "Clear Lake Shores"</td>
+</tr>
+<tr>
+<td>Google Maps link in the footer points at the street address, not their business listing</td>
+<td>Footer</td>
+<td>Link to the Google Business Profile so people see the reviews</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-website-what-google-needs-and-isnt-getting">3. Website: what Google needs and isn't getting</h2>
+<ul>
+<li><strong>No LocalBusiness schema anywhere.</strong> This is the behind-the-scenes info that tells Google "this is a pool builder at this address, with these hours and this phone number". Yoast (their SEO plugin) is installed but only marks pages as "web page". A one-time setup.</li>
+<li><strong>57 of 82 pages have no meta description</strong>, which is the text that shows under the link in Google results. That includes every blog post.</li>
+<li><strong>44 pages have no H1 heading.</strong> Every blog post is missing its main heading, so Google has to guess what each post is about.</li>
+<li><strong>520 of 605 images (86%) have no alt text.</strong> That hurts Google Images and screen-reader users. The home page has 7 images and none have alt text.</li>
+<li><strong>Thin and duplicate pages are indexable:</strong> 8 tag pages, an "Uncategorized" category and author archives are mostly the same list of posts. Set them to noindex in Yoast.</li>
+<li><strong>Duplicate page titles:</strong> the home page and another page share a title, and two Webster pages share one.</li>
+</ul>
+<p>What's working: HTTPS and the www and .net redirects are all set up correctly, there's a sitemap, robots.txt is fine, missing pages return a proper 404, and Google Analytics 4 is installed.</p>
+<h2 id="4-website-speed-google-pagespeed-mobile">4. Website speed (Google PageSpeed, mobile)</h2>
+<table>
+<thead>
+<tr>
+<th>Score</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Performance</td>
+<td><strong>66</strong> / 100</td>
+</tr>
+<tr>
+<td>Accessibility</td>
+<td>89 / 100</td>
+</tr>
+<tr>
+<td>Best practices</td>
+<td>100 / 100</td>
+</tr>
+<tr>
+<td>SEO</td>
+<td>100 / 100 (basic checks only)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Largest Contentful Paint: 14.0 seconds</strong> on a phone. That's how long until the big hero image shows. Google wants under 2.5 seconds, and most visitors leave long before 14.</li>
+<li>The home page is <strong>4 MB</strong>. Render-blocking files cost about 2 seconds, and missing cache settings waste 1.5 MB on repeat visits.</li>
+<li>The SEO score of 100 only covers basic checks. It doesn't catch the missing schema, descriptions and headings above.</li>
+<li><strong>Fix:</strong> compress and resize the hero image, use WebP, add a caching plugin, and trim the Elementor add-ons.</li>
+</ul>
+<h2 id="5-email">5. Email</h2>
+<ul>
+<li>Email runs on <strong>southerncharmpools.net</strong> through Microsoft 365. The website is on <strong>.com</strong>, which uses a different mail host.</li>
+<li><strong>Neither domain has a DMARC record.</strong> Without it, anyone can send email that looks like it's from them, and Gmail and Yahoo are stricter with domains that don't have one. A 10-minute DNS fix (start with <code>p=none</code> reporting).</li>
+<li>Worth a test: send the website contact form to Gmail and make sure it doesn't land in spam.</li>
+</ul>
+<h2 id="6-security-light-public-only-look">6. Security (light, public-only look)</h2>
+<ul>
+<li>A Sucuri firewall is in place and blocks the usual WordPress snooping. Good.</li>
+<li>The <strong>admin username is public</strong> (the author pages are at /author/megasiteadmin/). Set an author display name and remove author archives.</li>
+<li><code>/readme.html</code> shows the WordPress version. Delete it.</li>
+<li>No browser security headers (HSTS, X-Frame-Options and so on). The host or Sucuri can add these in one setting.</li>
+<li>The SSL certificate is valid until February 2027.</li>
+</ul>
+<h2 id="priority-list-for-the-owner">Priority list for the owner</h2>
+<ol>
+<li><strong>Claim Apple Maps</strong> and fix the city (free, 20 minutes).</li>
+<li><strong>Fix Bing's services list</strong> and make hours match everywhere (Google, Bing, Apple, website).</li>
+<li><strong>Confirm family owner access</strong> on Google Business Profile, Bing Places, Apple Business Connect and the domain registrar.</li>
+<li><strong>Fix the broken items</strong> in section 2 (about an hour).</li>
+<li><strong>Add LocalBusiness schema</strong>, meta descriptions, blog-post H1s and alt text.</li>
+<li><strong>Speed up the home page</strong>: hero image, caching.</li>
+<li><strong>Add DMARC</strong> to both domains.</li>
+<li>Clean up directories (Wheree, the second Facebook page, Yelp).</li>
+</ol>
+<p>Most of 1 to 4 and 7 can be fixed now on the current site. 5 and 6 come built into the redesign.</p>
+<h2 id="issue-list">Issue list</h2>
+<p>Every issue found, who can fix it, and whether the redesign already handles it.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Issue</th>
+<th>Fix on today's site</th>
+<th>In the redesign</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Apple Maps unclaimed, city shows Kemah</td>
+<td>Owner claims it at Apple Business Connect</td>
+<td>n/a (listing)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Bing lists chimney, carpet and water-heater services</td>
+<td>Owner edits at Bing Places</td>
+<td>n/a (listing)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Hours differ: Google and Bing say 8:30 to 5:30, website says 9 to 5</td>
+<td>Owner picks one; update all four</td>
+<td>Uses 9 to 5 until the owner confirms</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Google owner access not confirmed</td>
+<td>Owner checks who manages the profile</td>
+<td>n/a (listing)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Wrong addresses on Wheree; second Facebook page using the name</td>
+<td>Request corrections or removal</td>
+<td>n/a (listing)</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Review count on the site is out of date</td>
+<td>Update text</td>
+<td><strong>Done:</strong> 114 Google reviews</td>
+</tr>
+<tr>
+<td>7</td>
+<td>BBB wording</td>
+<td>Say "A+ rating", not "accredited"</td>
+<td><strong>Done</strong></td>
+</tr>
+<tr>
+<td>8</td>
+<td>No LocalBusiness schema</td>
+<td>Configure Yoast Local or add the JSON-LD</td>
+<td><strong>Done:</strong> address, phone, hours, rating, map, social profiles</td>
+</tr>
+<tr>
+<td>9</td>
+<td>57 pages with no meta description</td>
+<td>Write them in Yoast</td>
+<td>Every page gets one when rebuilt with real URLs</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Blog posts have no H1</td>
+<td>Fix the post template</td>
+<td>Every page has one H1</td>
+</tr>
+<tr>
+<td>11</td>
+<td>86% of images have no alt text</td>
+<td>Add alt text in the media library</td>
+<td><strong>Done:</strong> every image described</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Missing IntelliCenter PDF</td>
+<td>Re-upload or remove the link</td>
+<td>Carry over when the user-guides page moves</td>
+</tr>
+<tr>
+<td>13</td>
+<td>4 blog photos load from another site that's down</td>
+<td>Upload them to their own media library</td>
+<td>Fixed when the blog moves</td>
+</tr>
+<tr>
+<td>14</td>
+<td>Lender phone link dials a 9-digit number</td>
+<td>Fix the link on /financing/</td>
+<td>Lenders listed with Apply links, no broken numbers</td>
+</tr>
+<tr>
+<td>15</td>
+<td>Old Twitter link; no Instagram link</td>
+<td>Update the header icons</td>
+<td><strong>Done:</strong> Facebook, Instagram and YouTube in the footer</td>
+</tr>
+<tr>
+<td>16</td>
+<td>WordPress "Sample Page" is live</td>
+<td>Delete it</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td>17</td>
+<td>Header address leaves out the city</td>
+<td>Add "Clear Lake Shores"</td>
+<td><strong>Done:</strong> full address everywhere</td>
+</tr>
+<tr>
+<td>18</td>
+<td>Map link goes to the street address, not the business</td>
+<td>Point it at the Google listing</td>
+<td><strong>Done:</strong> links open their Google listing and reviews</td>
+</tr>
+<tr>
+<td>19</td>
+<td>Thin tag and author pages are indexable</td>
+<td>Set noindex in Yoast</td>
+<td>No tag or author pages</td>
+</tr>
+<tr>
+<td>20</td>
+<td>Home page loads in 14 seconds on a phone, 4 MB</td>
+<td>Compress the hero, add caching</td>
+<td>Hero is 400 KB; whole home page well under 2 MB</td>
+</tr>
+<tr>
+<td>21</td>
+<td>No DMARC on .com or .net</td>
+<td>Add a DNS record</td>
+<td>n/a (email)</td>
+</tr>
+<tr>
+<td>22</td>
+<td>Admin username and WordPress version are public</td>
+<td>Remove author archives and readme.html</td>
+<td>n/a once migrated; still applies if they stay on WordPress</td>
+</tr>
+<tr>
+<td>23</td>
+<td>No browser security headers</td>
+<td>One setting in Sucuri or the host</td>
+<td>Set at launch (swap-over checklist)</td>
+</tr>
+</tbody>
+</table>
+</main></body></html>
