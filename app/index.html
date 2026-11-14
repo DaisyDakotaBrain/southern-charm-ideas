@@ -565,6 +565,7 @@ function renderStop(id) {
       <div class="panel"><div class="panel-head"><h2>Water test</h2><span class="muted" style="font-size:.82rem">last visit ${VISIT_DATES[VISIT_DATES.length - 2] || ''}</span></div>
         ${state.coach ? `<div style="margin-bottom:10px">${coachBox('testing', ['Fill the sample from elbow-deep, away from returns and the skimmer.', 'Chlorine turns the sample pink, pH turns it yellow to red. Match the color in good light, not in the sun.', 'Reagents go bad after about a year. Check the date on the bottles.'])}</div>` : ''}
         <div class="readings" id="readings">${READ.map(x => readingRow(p, v.r, x)).join('')}</div>
+        <p class="muted" style="font-size:.8rem;margin-top:8px">Typed in by hand for now. In a full iPhone version, a Bluetooth tester like the LaMotte Spin Touch would fill these in for you.</p>
         <div id="dose-box" style="margin-top:12px">${v.doseShown ? doseHtml(p, v.r) : `<button class="btn btn-ai btn-block" data-act="dose">${I.spark}What do I add?</button>`}</div>
       </div>
       <div class="panel" id="issue-box">${issueHtml(p, v)}</div>
