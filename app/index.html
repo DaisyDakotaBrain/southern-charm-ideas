@@ -481,7 +481,7 @@ function renderRoute() {
   $('#phone').innerHTML = `
     <div class="ph-head">
       <div class="day"><h1>Tuesday route</h1><span class="num muted">Nov 18</span></div>
-      <p class="day-sub">Kody &middot; ${state.order.length} pools &middot; about ${hm(total)} with driving &middot; ${done} done</p>
+      <p class="day-sub">Jordan &middot; ${state.order.length} pools &middot; about ${hm(total)} with driving &middot; ${done} done</p>
       <div class="progress" aria-hidden="true">${state.order.map(id => `<span class="${vis(id).status}"></span>`).join('')}</div>
     </div>
     <div class="ph-body">
@@ -638,7 +638,7 @@ function reportText(p, v) {
   if (psiOff) s += `\nFilter pressure is ${v.r.psi} psi, so we'll clean the filter ${psiOff === 'Clean the filter' ? 'today' : 'next visit'}.`;
   if (v.issue) s += `\n\nWe noticed: ${SCEN[v.issue.k].cause.toLowerCase()}. ${v.issue.sent ? 'Our office will reach out about next steps.' : ''}`;
   if (/latched/.test(p.needs.join())) s += `\n\nSide gate is latched behind us.`;
-  return s + `\n\nKody, Southern Charm Pool Care\n281-595-7665`;
+  return s + `\n\nJordan, Southern Charm Pool Care\n281-595-7665`;
 }
 function fmtClock(t) { let h = Math.floor(t / 60), m = t % 60; const ap = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12; return `${h}:${String(m).padStart(2, '0')} ${ap}`; }
 function eta(id) { let t = 8 * 60, prev = SHOP; for (const x of state.order) { t += Math.round(dist(prev, BY[x]) * 0.32); if (x === id) return t + BY[x].mins; t += BY[x].mins; prev = BY[x]; } return t; }
@@ -677,14 +677,14 @@ function officeToday() {
   const attn = [];
   state.order.forEach(id => {
     const p = BY[id], v = vis(id);
-    if (p.flags.some(f => f[0] === 'bad') && v.status !== 'done') attn.push({ id, tag: 'tag-bad', t: 'Green pool reported', d: `${p.name} sent a photo this morning. Kody is routed there first.` });
+    if (p.flags.some(f => f[0] === 'bad') && v.status !== 'done') attn.push({ id, tag: 'tag-bad', t: 'Green pool reported', d: `${p.name} sent a photo this morning. Jordan is routed there first.` });
     const psi = offTarget('psi', v.r.psi, p, v.r); if (psi) attn.push({ id, tag: 'tag-warn', t: 'Filter pressure climbing', d: `${p.name}: ${p.hist.psi.join(', ')} psi over six visits. Book a filter clean (Full service plus does this quarterly).` });
     if (v.r.cya > 90) attn.push({ id, tag: 'tag-warn', t: 'Stabilizer too high', d: `${p.name}: CYA ${v.r.cya} from chlorine tabs. Suggest switching to liquid and a spring partial drain.` });
   });
   attn.push({ id: 'haskell', tag: 'tag-sc', t: 'Warranty check due', d: 'Margaret Haskell: IntelliFlo threw Drive Overheat last week. Under warranty to Aug 2027 (build SC-0431).' });
   return `<div class="o-grid">
     <div>
-      <div class="o-title"><h2>Kody's Tuesday route</h2><span class="muted">${done} of ${state.order.length} done${state.optimized ? ' &middot; reordered by assistant' : ''}</span></div>
+      <div class="o-title"><h2>Jordan's Tuesday route</h2><span class="muted">${done} of ${state.order.length} done${state.optimized ? ' &middot; reordered by assistant' : ''}</span></div>
       <div class="board">
         <div class="board-row head"><span>#</span><span>Customer</span><span class="hide-sm">Plan</span><span>Status</span></div>
         ${state.order.map((id, i) => { const p = BY[id], v = vis(id); return `<div class="board-row"><span class="num muted">${i + 1}</span>
