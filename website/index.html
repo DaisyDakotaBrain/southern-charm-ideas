@@ -9,7 +9,7 @@
 <meta name="description" content="Veteran-owned custom pool builder in League City, Clear Lake and Friendswood, TX. Custom pools, remodels, outdoor living, equipment repair and weekly pool care.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Figtree:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Outfit:wght@500;600;700;800&family=Figtree:wght@400;500;600&display=swap">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"HomeAndConstructionBusiness","name":"Southern Charm Pools","url":"https://southerncharmpools.com/","telephone":"+1-281-595-7665","email":"swim@southerncharmpools.net",
 "address":{"@type":"PostalAddress","streetAddress":"1005 Aspen Rd Suite B","addressLocality":"Clear Lake Shores","addressRegion":"TX","postalCode":"77565","addressCountry":"US"},
@@ -122,7 +122,8 @@ header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; backg
 .hero-photo::before { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(8, 26, 44, .86) 0%, rgba(8, 26, 44, .62) 45%, rgba(8, 26, 44, .08) 80%); z-index: 1; }
 .hero-photo .wrap { position: relative; z-index: 2; width: 100%; padding-block: 56px; }
 .hero-copy { max-width: 600px; }
-.hero-copy h1 { font-size: clamp(2.2rem, 1.5rem + 3vw, 3.7rem); font-weight: 700; }
+.hero-copy h1 { font-size: clamp(2.2rem, 1.5rem + 3vw, 3.7rem); font-weight: 800; letter-spacing: -.02em; }
+.hero-copy h1 .custom { display: inline-block; font-family: 'Kaushan Script', 'Brush Script MT', cursive; font-weight: 400; font-size: 1.6em; line-height: .95; letter-spacing: 0; color: var(--sun); transform: rotate(-5deg); transform-origin: left bottom; margin: 0 0 .08em -.04em; padding-right: .12em; text-shadow: 0 2px 18px rgba(8, 26, 44, .55), 0 1px 2px rgba(8, 26, 44, .5); }
 .hero-copy p { margin-top: 16px; font-size: 1.15rem; color: #e2edf6; max-width: 46ch; }
 .hero-ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
 @media (max-width: 700px) { .hero-photo::before { background: linear-gradient(180deg, rgba(8, 26, 44, .45) 0%, rgba(8, 26, 44, .88) 70%); } .hero-photo { align-items: flex-end; } }
@@ -480,7 +481,7 @@ footer { background: var(--surface); border-top: 1px solid var(--line); padding-
     <div class="caustics" aria-hidden="true"><i></i><i></i></div>
     <div class="wrap">
       <div class="hero-copy">
-        <h1>Custom pools built for Gulf Coast backyards</h1>
+        <h1><span class="custom">Custom</span><br> pools built for Gulf Coast backyards</h1>
         <p>Design, build and care from a veteran-owned League City team, with a 3D rendering before we ever dig.</p>
         <div class="hero-ctas">
           <a class="btn btn-light" href="#contact">Start your design</a>
@@ -968,7 +969,8 @@ footer { background: var(--surface); border-top: 1px solid var(--line); padding-
   // Hero headline reveal (first load only)
   if (!reduce) {
     const h = $('.hero-copy h1');
-    h.innerHTML = h.textContent.split(' ').map((w, i) => `<span class="w" style="--i:${i}">${w}</span>`).join(' ');
+    const lead = $('.custom', h), rest = h.lastChild.textContent.trim().split(' ');
+    h.innerHTML = (lead ? `<span class="w custom" style="--i:0">${lead.textContent}</span><br> ` : '') + rest.map((w, i) => `<span class="w" style="--i:${i + 1}">${w}</span>`).join(' ');
     document.body.classList.add('intro');
     setTimeout(() => document.body.classList.remove('intro'), 1800);
   }
